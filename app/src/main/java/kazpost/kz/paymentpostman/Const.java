@@ -9,5 +9,5 @@ public class Const {
     public static final String PREF_NAME = "mobterminal_pref";
     public static final String TIMESTAMP_FORMAT = "yyyyMMdd_HHmmss";
 
-    public static final String BASE_URL_QIWI = "http://172.30.73.19:8088/qiwi/endpoint";
+    public static final String BASE_URL_QIWI = "http://172.30.73.19:8088/";
 }

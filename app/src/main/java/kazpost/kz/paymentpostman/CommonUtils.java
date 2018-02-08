@@ -40,6 +40,7 @@ public final class CommonUtils {
         // This utility class is not publicly instantiable
     }
 
+/*
     public static ProgressDialog showLoadingDialog(Context context) {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
@@ -52,6 +53,7 @@ public final class CommonUtils {
         progressDialog.setCanceledOnTouchOutside(false);
         return progressDialog;
     }
+*/
 
     @SuppressLint("all")
     public static String getDeviceId(Context context) {

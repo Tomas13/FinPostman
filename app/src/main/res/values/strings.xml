@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">PaymentPostman</string>
+
+    <string-array name="service">
+        <item>Beeline</item>
+        <item>Tele2</item>
+        <item>Altel</item>
+        <item>Activ</item>
+        <item>Kcell</item>
+        <item>Qiwi</item>
+    </string-array>
 </resources>

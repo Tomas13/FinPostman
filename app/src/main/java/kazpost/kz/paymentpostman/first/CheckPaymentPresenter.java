@@ -10,6 +10,10 @@ import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.strategy.Strategy;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -27,7 +31,7 @@ import kazpost.kz.paymentpostman.mvp.Presenter;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 
 
@@ -51,7 +55,9 @@ public class CheckPaymentPresenter extends Presenter<CheckView> {
     }
 
     //    Запрос на проверку возможности оплаты (check) запрос
-    public void checkPaymentRequest() {
+    public void checkPaymentRequest(double payId, int currency, String amount, int service, String account) {
+
+        getView().showLoading();
 
         int cacheSize = 10 * 1024 * 1024;
         File cacheDir = ((BaseActivity) getView()).getCacheDir();
@@ -62,7 +68,7 @@ public class CheckPaymentPresenter extends Presenter<CheckView> {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(SimpleXmlConverterFactory.create(serializer))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl(Const.BASE_URL_QIWI)
                 .client(provideOkhttpClient(cache))
                 .build();
@@ -73,77 +79,142 @@ public class CheckPaymentPresenter extends Presenter<CheckView> {
         CheckPaymentData data = new CheckPaymentData();
         CheckPaymentBody body = new CheckPaymentBody();
 
-        data.setApayId();
-        data.setBfromCurrency();
-        data.setCfromAmount();
-        data.setDtoCurrency();
-        data.setEtoAmount();
-        data.setFservice();
-        data.setGaccount();
-        data.setHrecId();
-        data.setIdate();
+
+
+
+        Date date = null;
+
+        SimpleDateFormat formatter3 = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy", Locale.US);
+
+        try {
+            date = formatter3.parse(String.valueOf(new Date()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        data.setA1payId(Double.toString(payId));
+        data.setB2fromCurrency(Integer.toString(currency));
+        data.setfromAmount(amount);
+        data.settoCurrency(Integer.toString(currency));
+        data.settoAmount(amount);
+        data.setservice(Integer.toString(service));
+        data.setaccount(account);
+        data.setrecId(Double.toString(payId));
+        data.setdate(String.valueOf(date));
 
 
         body.setCheckPaymentData(data);
+        checkPaymentEnvelope.setCheckPaymentBody(body);
+
+
         networkService.checkPayment(checkPaymentEnvelope)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(envelope1 -> {
-                    envelope1.getBody().getCheckPaymentResponse().getCheckResult();
+                    getView().hideLoading();
+                    getView().showCheckPaymentResult(envelope1.getBody().getCheckPaymentResponse().getResponseInfo().getResponseText());
                 }, throwable -> {
+                    getView().hideLoading();
                     Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
                 });
 
-        getView().showCheckPaymentResult();
+//        getView().showCheckPaymentResult();
     }
 
 
     //<!--  запроса на создание платежа -->
-    public void AddOfflinePaymentRequest() {
+//    public void AddOfflinePaymentRequest() {
+//
+//        int cacheSize = 10 * 1024 * 1024;
+//        File cacheDir = ((BaseActivity) getView()).getCacheDir();
+//        Cache cache = new Cache(cacheDir, cacheSize);
+//
+//        Strategy strategy = new AnnotationStrategy();
+//        Serializer serializer = new Persister(strategy);
+//
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .addConverterFactory(SimpleXmlConverterFactory.create(serializer))
+//                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+//                .baseUrl(Const.BASE_URL_QIWI)
+//                .client(provideOkhttpClient(cache))
+//                .build();
+//
+//        NetworkService networkService = retrofit.create(NetworkService.class);
+//
+//        AddOfflinePaymentEnvelope addOfflinePaymentEnvelope = new AddOfflinePaymentEnvelope();
+//        AddOfflinePaymentData data = new AddOfflinePaymentData();
+//        AddOfflinePaymentBody body = new AddOfflinePaymentBody();
+//
+//        data.setApayId();
+//        data.setBfromCurrency();
+//        data.setCfromAmount();
+//        data.setDtoCurrency();
+//        data.setEtoAmount();
+//        data.setFservice();
+//        data.setGaccount();
+//        data.setHrecId();
+//        data.setIdate();
+//
+//        body.setAddOfflinePaymentData(data);
+//
+//        networkService.addOfflinePayment(addOfflinePaymentEnvelope)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(envelope -> {
+//                    envelope.getBody().getAddOfflinePaymentResponse().getPaymentResult();
+//                }, throwable -> {
+//                    Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
+//                });
+//
+//        getView().showCheckPaymentResult();
+//    }
 
-        int cacheSize = 10 * 1024 * 1024;
-        File cacheDir = ((BaseActivity) getView()).getCacheDir();
-        Cache cache = new Cache(cacheDir, cacheSize);
 
-        Strategy strategy = new AnnotationStrategy();
-        Serializer serializer = new Persister(strategy);
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .addConverterFactory(SimpleXmlConverterFactory.create(serializer))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .baseUrl(Const.BASE_URL_QIWI)
-                .client(provideOkhttpClient(cache))
-                .build();
-
-        NetworkService networkService = retrofit.create(NetworkService.class);
-
-        AddOfflinePaymentEnvelope addOfflinePaymentEnvelope = new AddOfflinePaymentEnvelope();
-        AddOfflinePaymentData data = new AddOfflinePaymentData();
-        AddOfflinePaymentBody body = new AddOfflinePaymentBody();
-
-        data.setApayId();
-        data.setBfromCurrency();
-        data.setCfromAmount();
-        data.setDtoCurrency();
-        data.setEtoAmount();
-        data.setFservice();
-        data.setGaccount();
-        data.setHrecId();
-        data.setIdate();
-
-        body.setAddOfflinePaymentData(data);
-
-        networkService.addOfflinePayment(addOfflinePaymentEnvelope)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(envelope -> {
-                    envelope.getBody().getAddOfflinePaymentResponse().getPaymentResult();
-                }, throwable -> {
-                    Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
-                });
-
-        getView().showCheckPaymentResult();
-    }
+//    public void AddOfflinePaymentRequest() {
+//
+//        int cacheSize = 10 * 1024 * 1024;
+//        File cacheDir = ((BaseActivity) getView()).getCacheDir();
+//        Cache cache = new Cache(cacheDir, cacheSize);
+//
+//        Strategy strategy = new AnnotationStrategy();
+//        Serializer serializer = new Persister(strategy);
+//
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .addConverterFactory(SimpleXmlConverterFactory.create(serializer))
+//                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+//                .baseUrl(Const.BASE_URL_QIWI)
+//                .client(provideOkhttpClient(cache))
+//                .build();
+//
+//        NetworkService networkService = retrofit.create(NetworkService.class);
+//
+//        AddOfflinePaymentEnvelope addOfflinePaymentEnvelope = new AddOfflinePaymentEnvelope();
+//        AddOfflinePaymentData data = new AddOfflinePaymentData();
+//        AddOfflinePaymentBody body = new AddOfflinePaymentBody();
+//
+//        data.setApayId();
+//        data.setBfromCurrency();
+//        data.setCfromAmount();
+//        data.setDtoCurrency();
+//        data.setEtoAmount();
+//        data.setFservice();
+//        data.setGaccount();
+//        data.setHrecId();
+//        data.setIdate();
+//
+//        body.setAddOfflinePaymentData(data);
+//
+//        networkService.addOfflinePayment(addOfflinePaymentEnvelope)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(envelope -> {
+//                    envelope.getBody().getAddOfflinePaymentResponse().getPaymentResult();
+//                }, throwable -> {
+//                    Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
+//                });
+//
+//        getView().showCheckPaymentResult();
+//    }
 
 
     @Override

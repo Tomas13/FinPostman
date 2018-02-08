@@ -1,11 +1,13 @@
 package kazpost.kz.paymentpostman.mvp;
 
+import android.app.ProgressDialog;
 import android.support.annotation.LayoutRes;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 
 import butterknife.ButterKnife;
+import kazpost.kz.paymentpostman.CommonUtils;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -21,9 +23,13 @@ public class BaseActivity extends AppCompatActivity {
         ButterKnife.bind(this);
     }
 
+    private ProgressDialog mProgressDialog;
+
+
     @Override
     public void setContentView(View view, ViewGroup.LayoutParams params) {
         super.setContentView(view, params);
         ButterKnife.bind(this);
     }
+
 }

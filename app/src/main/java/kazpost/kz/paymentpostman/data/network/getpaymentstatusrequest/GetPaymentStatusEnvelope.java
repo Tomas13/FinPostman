@@ -1,4 +1,4 @@
-package kazpost.kz.paymentpostman.data.network.checkpaymentmodels;
+package kazpost.kz.paymentpostman.data.network.getpaymentstatusrequest;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Namespace;
@@ -14,20 +14,20 @@ import org.simpleframework.xml.Root;
         @Namespace( prefix = "soapenv", reference = "http://schemas.xmlsoap.org/soap/envelope/"),
         @Namespace( prefix = "sch", reference = "http://webservices.kazpost.kz/qiwi/schema"),
 })
-public class CheckPaymentEnvelope {
+public class GetPaymentStatusEnvelope {
 
     @Element(name = "soapenv:Header", required = false)
-    private String Aheader = "";
+    private String header = "";
 
 
     @Element(name = "soapenv:Body", required = false)
-    private CheckPaymentBody checkPaymentBody;
+    private GetPaymentStatusBody getPaymentStatusBody;
 
-    public CheckPaymentBody getCheckPaymentBody() {
-        return checkPaymentBody;
+    public GetPaymentStatusBody getGetPaymentStatusBody() {
+        return getPaymentStatusBody;
     }
 
-    public void setCheckPaymentBody(CheckPaymentBody checkPaymentBody) {
-        this.checkPaymentBody = checkPaymentBody;
+    public void setGetPaymentStatusBody(GetPaymentStatusBody getPaymentStatusBody) {
+        this.getPaymentStatusBody = getPaymentStatusBody;
     }
 }

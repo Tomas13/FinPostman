@@ -1,7 +1,13 @@
 package kazpost.kz.paymentpostman.mvp;
 
 
+import android.app.ProgressDialog;
+
+import kazpost.kz.paymentpostman.CommonUtils;
+
 public class MVPBaseActivity<V extends PresenterView> extends BaseActivity {
+
+
 
     private Presenter<V> presenter;
 
@@ -9,6 +15,9 @@ public class MVPBaseActivity<V extends PresenterView> extends BaseActivity {
         this.presenter = presenter;
         presenter.attachView(presenterView);
     }
+
+
+
 
     @Override
     protected void onDestroy() {

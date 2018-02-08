@@ -74,39 +74,4 @@ public class AddOfflinePaymentData {
         Idate = idate;
     }
 
-    public int getApayId() {
-        return ApayId;
-    }
-
-    public int getBfromCurrency() {
-        return BfromCurrency;
-    }
-
-    public int getCfromAmount() {
-        return CfromAmount;
-    }
-
-    public int getDtoCurrency() {
-        return DtoCurrency;
-    }
-
-    public double getEtoAmount() {
-        return EtoAmount;
-    }
-
-    public int getFservice() {
-        return Fservice;
-    }
-
-    public int getGaccount() {
-        return Gaccount;
-    }
-
-    public int getHrecId() {
-        return HrecId;
-    }
-
-    public String getIdate() {
-        return Idate;
-    }
 }

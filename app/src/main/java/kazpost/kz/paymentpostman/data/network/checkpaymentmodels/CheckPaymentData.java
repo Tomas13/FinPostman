@@ -5,108 +5,110 @@ package kazpost.kz.paymentpostman.data.network.checkpaymentmodels;
  */
 
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.Order;
 import org.simpleframework.xml.Root;
 
-@Root(name = "sch:CheckPaymentRequest", strict = false)
+import java.util.Date;
+
+@Root(name = "sch:CheckPaymentRequest", strict = true)
 public class CheckPaymentData {
 
     @Element(name = "sch:payId")
-    private int ApayId;
+    private String Aaa1;
 
     @Element(name = "sch:fromCurrency")
-    private int BfromCurrency;
+    private String Bbb2;
 
     @Element(name = "sch:fromAmount")
-    private int CfromAmount;
+    private String Ccc3;
 
     @Element(name = "sch:toCurrency")
-    private int DtoCurrency;
+    private String Ddd4;
 
     @Element(name = "sch:toAmount")
-    private double EtoAmount;
+    private String Eee5;
 
     @Element(name = "sch:service")
-    private int Fservice;
+    private String Fff6;
 
     @Element(name = "sch:account")
-    private int Gaccount;
+    private String Ggg7;
 
     @Element(name = "sch:recId")
-    private int HrecId;
+    private String Hhh8;
 
     @Element(name = "sch:date")
-    private String Idate;
+    private String Iii9;
 
-
-    public void setApayId(int apayId) {
-        ApayId = apayId;
+    public String getA1payId() {
+        return Aaa1;
     }
 
-    public void setBfromCurrency(int bfromCurrency) {
-        BfromCurrency = bfromCurrency;
+    public void setA1payId(String a1payId) {
+        Aaa1 = a1payId;
     }
 
-    public void setCfromAmount(int cfromAmount) {
-        CfromAmount = cfromAmount;
+    public String getB2fromCurrency() {
+        return Bbb2;
     }
 
-    public void setDtoCurrency(int dtoCurrency) {
-        DtoCurrency = dtoCurrency;
+    public void setB2fromCurrency(String b2fromCurrency) {
+        Bbb2 = b2fromCurrency;
     }
 
-    public void setEtoAmount(double etoAmount) {
-        EtoAmount = etoAmount;
+    public String getfromAmount() {
+        return Ccc3;
     }
 
-    public void setFservice(int fservice) {
-        Fservice = fservice;
+    public void setfromAmount(String fromAmount) {
+        this.Ccc3 = fromAmount;
     }
 
-    public void setGaccount(int gaccount) {
-        Gaccount = gaccount;
+    public String gettoCurrency() {
+        return Ddd4;
     }
 
-    public void setHrecId(int hrecId) {
-        HrecId = hrecId;
+    public void settoCurrency(String toCurrency) {
+        this.Ddd4 = toCurrency;
     }
 
-    public void setIdate(String idate) {
-        Idate = idate;
+    public String gettoAmount() {
+        return Eee5;
     }
 
-    public int getApayId() {
-        return ApayId;
+    public void settoAmount(String toAmount) {
+        this.Eee5 = toAmount;
     }
 
-    public int getBfromCurrency() {
-        return BfromCurrency;
+    public String getservice() {
+        return Fff6;
     }
 
-    public int getCfromAmount() {
-        return CfromAmount;
+    public void setservice(String service) {
+        this.Fff6 = service;
     }
 
-    public int getDtoCurrency() {
-        return DtoCurrency;
+    public String getaccount() {
+        return Ggg7;
     }
 
-    public double getEtoAmount() {
-        return EtoAmount;
+    public void setaccount(String account) {
+        this.Ggg7 = account;
     }
 
-    public int getFservice() {
-        return Fservice;
+    public String getrecId() {
+        return Hhh8;
     }
 
-    public int getGaccount() {
-        return Gaccount;
+    public void setrecId(String recId) {
+        this.Hhh8 = recId;
     }
 
-    public int getHrecId() {
-        return HrecId;
+    public String getdate() {
+        return Iii9;
     }
 
-    public String getIdate() {
-        return Idate;
+    public void setdate(String date) {
+        this.Iii9 = date;
     }
 }

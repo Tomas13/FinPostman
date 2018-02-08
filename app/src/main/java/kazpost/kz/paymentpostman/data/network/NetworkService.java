@@ -5,7 +5,9 @@ import io.reactivex.Observable;
 import kazpost.kz.paymentpostman.data.network.addofflinepaymentrequest.AddOfflinePaymentEnvelope;
 import kazpost.kz.paymentpostman.data.network.checkpaymentmodels.CheckPaymentEnvelope;
 import kazpost.kz.paymentpostman.data.network.checkpaymentmodels.Envelope;
+import kazpost.kz.paymentpostman.data.network.getpaymentstatusrequest.GetPaymentStatusEnvelope;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
@@ -15,9 +17,11 @@ import retrofit2.http.POST;
 
 public interface NetworkService {
 
-    @POST("qiwi/qiwi.wsdl")
+
+    @POST("qiwi/endpoint")
     @Headers("Content-Type: text/xml")
     Observable<Envelope> checkPayment(@Body CheckPaymentEnvelope requestEnvelope);
+
 
 
     @POST("qiwi/qiwi.wsdl")
@@ -25,5 +29,9 @@ public interface NetworkService {
     Observable<kazpost.kz.paymentpostman.data.network.addofflinepaymentrequest.Envelope> addOfflinePayment(
             @Body AddOfflinePaymentEnvelope requestEnvelope);
 
+    @POST("qiwi/qiwi.wsdl")
+    @Headers("Content-Type: text/xml")
+    Observable<kazpost.kz.paymentpostman.data.network.getpaymentstatusrequest.Envelope> getPaymentStatus(
+            @Body GetPaymentStatusEnvelope requestEnvelope);
 
 }

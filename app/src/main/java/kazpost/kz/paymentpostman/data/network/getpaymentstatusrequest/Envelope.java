@@ -1,15 +1,9 @@
-package kazpost.kz.paymentpostman.data.network.checkpaymentmodels;
+package kazpost.kz.paymentpostman.data.network.getpaymentstatusrequest;
 
 import org.simpleframework.xml.Element;
-import org.simpleframework.xml.Namespace;
-import org.simpleframework.xml.NamespaceList;
 import org.simpleframework.xml.Root;
 
 @Root(name = "Envelope")
-@NamespaceList({
-        @Namespace( prefix = "soapenv", reference = "http://schemas.xmlsoap.org/soap/envelope/"),
-        @Namespace( prefix = "ns2", reference = "http://webservices.kazpost.kz/qiwi/schema"),
-})
 public class Envelope {
 
     @Element(name = "Header", required = false)
@@ -71,47 +65,34 @@ public class Envelope {
 
     }
 
-
-    public static class Body {
-
-        @Element(name = "CheckPaymentResponse", required = false)
-        CheckPaymentResponse checkPaymentResponse;
-
-        public CheckPaymentResponse getCheckPaymentResponse() {
-            return checkPaymentResponse;
-        }
-
-        public void setCheckPaymentResponse(CheckPaymentResponse checkPaymentResponse) {
-            this.checkPaymentResponse = checkPaymentResponse;
-        }
-    }
-
-
-    public static class CheckPaymentResponse {
+    public static class GetPaymentStatusResponse {
 
         @Element(name = "responseResult", required = false)
-        String responseResult;
+        int responseResult;
 
-        @Element(name = "checkResult", required = false)
-        String checkResult;
+        @Element(name = "statusResult", required = false)
+        int statusResult;
+
+        @Element(name = "resultDscr")
+        String resultDscr;
+
+        @Element(name = "date", required = false)
+        String date;
 
         @Element(name = "fatal", required = false)
-        String fatal;
+        boolean fatal;
 
         @Element(name = "id", required = false)
-        String id;
+        int id;
 
         @Element(name = "payResult", required = false)
-        String payResult;
-
-        @Element(name = "saved", required = false)
-        String saved;
+        int payResult;
 
         @Element(name = "status", required = false)
-        String status;
+        int status;
 
         @Element(name = "uid", required = false)
-        String uid;
+        double uid;
 
         @Element(name = "parserHost", required = false)
         String parserHost;
@@ -119,7 +100,11 @@ public class Envelope {
         @Element(name = "ResponseInfo", required = false)
         ResponseInfo responseInfo;
 
-        public String getResponseResult() {
+        public String getResultDscr() {
+            return resultDscr;
+        }
+
+        public int getResponseResult() {
             return responseResult;
         }
 
@@ -127,36 +112,50 @@ public class Envelope {
             return responseInfo;
         }
 
-        public String getCheckResult() {
-            return checkResult;
+        public int getStatusResult() {
+            return statusResult;
         }
 
-        public String isFatal() {
+        public String getDate() {
+            return date;
+        }
+
+        public boolean isFatal() {
             return fatal;
         }
 
-        public String getId() {
+        public int getId() {
             return id;
         }
 
-        public String getPayResult() {
+        public int getPayResult() {
             return payResult;
         }
 
-        public String isSaved() {
-            return saved;
-        }
-
-        public String getStatus() {
+        public int getStatus() {
             return status;
         }
 
-        public String getUid() {
+        public double getUid() {
             return uid;
         }
 
         public String getParserHost() {
             return parserHost;
+        }
+    }
+
+    public static class Body {
+
+        @Element(name = "GetPaymentStatusResponse", required = false)
+        GetPaymentStatusResponse getPaymentStatusResponse;
+
+        public GetPaymentStatusResponse getGetPaymentStatusResponse() {
+            return getPaymentStatusResponse;
+        }
+
+        public void setGetPaymentStatusResponse(GetPaymentStatusResponse getPaymentStatusResponse) {
+            this.getPaymentStatusResponse = getPaymentStatusResponse;
         }
     }
 

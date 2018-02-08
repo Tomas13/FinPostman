@@ -67,12 +67,17 @@ public class Envelope {
 
     public static class AddOfflinePaymentResponse {
 
-
-        @Element(name = "ResponseInfo", required = false)
-        ResponseInfo responseInfo;
+        @Element(name = "responseResult")
+        int responseResult;
 
         @Element(name = "paymentResult", required = false)
         int paymentResult;
+
+        @Element(name = "resultDscr")
+        String resultDscr;
+
+        @Element(name = "date", required = false)
+        String date;
 
         @Element(name = "fatal", required = false)
         boolean fatal;
@@ -95,9 +100,16 @@ public class Envelope {
         @Element(name = "parserHost", required = false)
         String parserHost;
 
-        @Element(name = "date", required = false)
-        String date;
+        @Element(name = "ResponseInfo", required = false)
+        ResponseInfo responseInfo;
 
+        public int getResponseResult() {
+            return responseResult;
+        }
+
+        public String getResultDscr() {
+            return resultDscr;
+        }
 
         public ResponseInfo getResponseInfo() {
             return responseInfo;

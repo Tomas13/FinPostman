@@ -1,6 +1,7 @@
 package kazpost.kz.paymentpostman.data.network.checkpaymentmodels;
 
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.Order;
 import org.simpleframework.xml.Root;
 
 /**
