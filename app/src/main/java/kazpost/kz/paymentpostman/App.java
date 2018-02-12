@@ -2,6 +2,7 @@ package kazpost.kz.paymentpostman;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.StrictMode;
 
 import com.facebook.stetho.Stetho;
 
@@ -15,10 +16,25 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         Stetho.initializeWithDefaults(this);
+
+        if(BuildConfig.DEBUG) {
+            initStrictMode();
+        }
     }
 
     public static App get(Context context) {
         return (App) context.getApplicationContext();
+    }
+
+    private void initStrictMode() {
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                .detectAll()
+                .penaltyLog()
+                .build());
+        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                .detectAll()
+                .penaltyLog()
+                .build());
     }
 
 }

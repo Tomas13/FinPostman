@@ -10,9 +10,9 @@ import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.strategy.Strategy;
 
 import java.io.File;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Calendar;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -20,13 +20,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import kazpost.kz.paymentpostman.Const;
 import kazpost.kz.paymentpostman.data.network.NetworkService;
-import kazpost.kz.paymentpostman.data.network.addofflinepaymentrequest.AddOfflinePaymentBody;
-import kazpost.kz.paymentpostman.data.network.addofflinepaymentrequest.AddOfflinePaymentData;
-import kazpost.kz.paymentpostman.data.network.addofflinepaymentrequest.AddOfflinePaymentEnvelope;
 import kazpost.kz.paymentpostman.data.network.checkpaymentmodels.CheckPaymentBody;
 import kazpost.kz.paymentpostman.data.network.checkpaymentmodels.CheckPaymentData;
 import kazpost.kz.paymentpostman.data.network.checkpaymentmodels.CheckPaymentEnvelope;
-import kazpost.kz.paymentpostman.mvp.BaseActivity;
+import kazpost.kz.paymentpostman.mvp.MVPBaseActivity;
 import kazpost.kz.paymentpostman.mvp.Presenter;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
@@ -54,13 +51,14 @@ public class CheckPaymentPresenter extends Presenter<CheckView> {
         return client.build();
     }
 
+
     //    Запрос на проверку возможности оплаты (check) запрос
-    public void checkPaymentRequest(double payId, int currency, String amount, int service, String account) {
+    public void checkPaymentRequest(long payId, int currency, String amount, int service, String account, LinkedHashMap<String, String> errorMap) {
 
         getView().showLoading();
 
         int cacheSize = 10 * 1024 * 1024;
-        File cacheDir = ((BaseActivity) getView()).getCacheDir();
+        File cacheDir = ((MVPBaseActivity) getView()).getCacheDir();
         Cache cache = new Cache(cacheDir, cacheSize);
 
         Strategy strategy = new AnnotationStrategy();
@@ -80,27 +78,20 @@ public class CheckPaymentPresenter extends Presenter<CheckView> {
         CheckPaymentBody body = new CheckPaymentBody();
 
 
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+        String formatted = format1.format(cal.getTime());
 
 
-        Date date = null;
-
-        SimpleDateFormat formatter3 = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy", Locale.US);
-
-        try {
-            date = formatter3.parse(String.valueOf(new Date()));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        data.setA1payId(Double.toString(payId));
+        data.setA1payId(Long.toString(payId));
         data.setB2fromCurrency(Integer.toString(currency));
         data.setfromAmount(amount);
         data.settoCurrency(Integer.toString(currency));
         data.settoAmount(amount);
         data.setservice(Integer.toString(service));
         data.setaccount(account);
-        data.setrecId(Double.toString(payId));
-        data.setdate(String.valueOf(date));
+        data.setrecId(Long.toString(payId));
+        data.setdate(formatted);
 
 
         body.setCheckPaymentData(data);
@@ -112,9 +103,18 @@ public class CheckPaymentPresenter extends Presenter<CheckView> {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(envelope1 -> {
                     getView().hideLoading();
-                    getView().showCheckPaymentResult(envelope1.getBody().getCheckPaymentResponse().getResponseInfo().getResponseText());
+                    String respCode = envelope1.getBody().getCheckPaymentResponse().getResponseInfo().getResponseCode();
+                    String respText = envelope1.getBody().getCheckPaymentResponse().getResponseInfo().getResponseText();
+
+                    if (respCode.equals("0")) {
+                        getView().showCheckPaymentResult(respText);
+                    } else {
+                        getView().showCheckPaymentResult(errorMap.get(respCode));
+                    }
+
                 }, throwable -> {
                     getView().hideLoading();
+                    getView().showCheckPaymentResult(throwable.getMessage());
                     Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
                 });
 

@@ -3,13 +3,16 @@ package kazpost.kz.paymentpostman.first;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
+import android.view.Gravity;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.iid.InstanceID;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
+
+import java.util.LinkedHashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,6 +35,7 @@ public class CheckPaymentActivity extends MVPBaseActivity<CheckView> implements 
     ProgressBar indeterminateBar;
 
     private int serviceInt;
+    private LinkedHashMap<String, String> map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +44,23 @@ public class CheckPaymentActivity extends MVPBaseActivity<CheckView> implements 
         ButterKnife.bind(this);
 
         presenter = new CheckPaymentPresenter();
-
         addPresenter(presenter, this);
 
+        initErrorMap();
+        setSpinnerSelectionListener();
+    }
+
+    private void initErrorMap() {
+        //Init ErrorMap to show correct error message
+        String[] keys = this.getResources().getStringArray(R.array.error_keys);
+        String[] values = this.getResources().getStringArray(R.array.error_values);
+        map = new LinkedHashMap<>();
+        for (int i = 0; i < Math.min(keys.length, values.length); ++i) {
+            map.put(keys[i], values[i]);
+        }
+    }
+
+    private void setSpinnerSelectionListener() {
         RxAdapterView.itemSelections(spinnerService)
                 .skipInitialValue()
                 .subscribe(integer -> {
@@ -67,43 +85,50 @@ public class CheckPaymentActivity extends MVPBaseActivity<CheckView> implements 
                             break;  //qiwi
                     }
                 });
-
-
     }
 
-    private long getPayId() {
+    private String getPayId() {
         SharedPreferences sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
-        long payId = 0L;
+        String payId = "notInitialized";
 
         if (sharedPreferences.contains("payId")) {
-            payId = sharedPreferences.getLong("payId", 1);
+            payId = sharedPreferences.getString("payId", "-1");
+        } else {
+            payId = InstanceID.getInstance(this).getId();
         }
-        sharedPreferences.edit().putLong("payId", ++payId).apply();
 
         return payId;
+    }
 
+    private void upgradePayId() {
+        SharedPreferences sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
+        sharedPreferences.edit().putString("payId", InstanceID.getInstance(this).getId() + 1).apply();
     }
 
 
     @Override
     public void showCheckPaymentResult(String res) {
-        Toast.makeText(this, "check " + res, Toast.LENGTH_SHORT).show();
-        Log.d(TAG, "showCheckPaymentResult: called " + res);
+        showToast(res);
+//        Toast toast = Toast.makeText(this, "check " + res, Toast.LENGTH_SHORT);
+//        toast.setGravity(Gravity.TOP, 0, 0);
+//        toast.show();
     }
 
     @OnClick(R.id.btn_check_payment)
     public void onViewClicked() {
-        presenter.checkPaymentRequest(getPayId(), 643, etAmount.getText().toString(), serviceInt, etAccount.getText().toString());
+        presenter.checkPaymentRequest(System.currentTimeMillis(), 643,
+                etAmount.getText().toString(), serviceInt, etAccount.getText().toString(),
+                map);
     }
 
-    @Override
-    public void showLoading() {
-        indeterminateBar.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideLoading() {
-        indeterminateBar.setVisibility(View.INVISIBLE);
-
-    }
+//    @Override
+//    public void showLoading() {
+//        indeterminateBar.setVisibility(View.VISIBLE);
+//    }
+//
+//    @Override
+//    public void hideLoading() {
+//        indeterminateBar.setVisibility(View.INVISIBLE);
+//
+//    }
 }

@@ -40,7 +40,7 @@ public final class CommonUtils {
         // This utility class is not publicly instantiable
     }
 
-/*
+
     public static ProgressDialog showLoadingDialog(Context context) {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
@@ -49,21 +49,20 @@ public final class CommonUtils {
         }
         progressDialog.setContentView(R.layout.progress_dialog);
         progressDialog.setIndeterminate(true);
-        progressDialog.setCancelable(true);
+        progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         return progressDialog;
     }
-*/
+
 
     @SuppressLint("all")
     public static String getDeviceId(Context context) {
         return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
-    public static boolean isPinValid(String pinCode){
+    public static boolean isPinValid(String pinCode) {
         return pinCode.equals("1111");
     }
-
 
 
     public static boolean isEmailValid(String email) {

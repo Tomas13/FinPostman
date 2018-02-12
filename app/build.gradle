@@ -69,4 +69,5 @@ dependencies {
     }
     compile 'com.jakewharton.rxbinding2:rxbinding:2.1.0'
 
+    implementation 'com.google.android.gms:play-services-gcm:11.8.0'
 }
