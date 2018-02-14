@@ -2,15 +2,17 @@ package kazpost.kz.paymentpostman.first;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
+import android.support.v7.app.AppCompatDelegate;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import com.google.android.gms.iid.InstanceID;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 
 import java.util.LinkedHashMap;
 
@@ -18,13 +20,23 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kazpost.kz.paymentpostman.R;
-import kazpost.kz.paymentpostman.mvp.MVPBaseActivity;
+import kazpost.kz.paymentpostman.mvp.BaseActivity;
 
-public class CheckPaymentActivity extends MVPBaseActivity<CheckView> implements CheckView {
+import static kazpost.kz.paymentpostman.Const.PREF_NAME;
+import static kazpost.kz.paymentpostman.Const.PREF_OPERATOR_CODE;
+import static kazpost.kz.paymentpostman.Const.PREF_PAY_REC_ID;
+
+public class CheckPaymentActivity extends BaseActivity<CheckView> implements CheckView {
 
     public static final String TAG = "CheckPaymentTag";
+    @BindView(R.id.btn_addoffline_payment)
+    Button btnAddofflinePayment;
+    @BindView(R.id.img_operator)
+    ImageView imgOperator;
+    @BindView(R.id.tv_operator_name)
+    TextView tvOperatorName;
 
-    CheckPaymentPresenter presenter;
+    private CheckPaymentPresenter presenter;
     @BindView(R.id.et_amount)
     EditText etAmount;
     @BindView(R.id.et_account)
@@ -35,6 +47,9 @@ public class CheckPaymentActivity extends MVPBaseActivity<CheckView> implements 
     ProgressBar indeterminateBar;
 
     private int serviceInt;
+    private long payAndRecId;
+    private SharedPreferences sharedPreferences;
+
     private LinkedHashMap<String, String> map;
 
     @Override
@@ -43,11 +58,25 @@ public class CheckPaymentActivity extends MVPBaseActivity<CheckView> implements 
         setContentView(R.layout.activity_check_payment);
         ButterKnife.bind(this);
 
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
         presenter = new CheckPaymentPresenter();
         addPresenter(presenter, this);
 
+        sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+
+        getPhone();
+
         initErrorMap();
         setSpinnerSelectionListener();
+    }
+
+    private void getPhone() {
+        RxTextView.textChanges(etAccount).skipInitialValue()
+                .filter(charSequence -> charSequence.length() == 10)
+                .subscribe(charSequence -> {
+                    presenter.getProviderByPhone(charSequence.toString(), map);
+                });
     }
 
     private void initErrorMap() {
@@ -87,39 +116,105 @@ public class CheckPaymentActivity extends MVPBaseActivity<CheckView> implements 
                 });
     }
 
-    private String getPayId() {
-        SharedPreferences sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
-        String payId = "notInitialized";
+    private Long getPayAndRecId() {
 
-        if (sharedPreferences.contains("payId")) {
-            payId = sharedPreferences.getString("payId", "-1");
+        if (sharedPreferences.contains(PREF_PAY_REC_ID)) {
+            payAndRecId = sharedPreferences.getLong(PREF_PAY_REC_ID, 0);
         } else {
-            payId = InstanceID.getInstance(this).getId();
+            showToast("Нет в памяти payId");
         }
 
-        return payId;
+        return payAndRecId;
     }
 
-    private void upgradePayId() {
-        SharedPreferences sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
-        sharedPreferences.edit().putString("payId", InstanceID.getInstance(this).getId() + 1).apply();
+    private void savePayAndRecId() {
+        sharedPreferences.edit().putLong(PREF_PAY_REC_ID, payAndRecId).apply();
+    }
+
+    private void saveAccountOperator(int operatorCode) {
+        sharedPreferences.edit().putInt(PREF_OPERATOR_CODE, operatorCode).apply();
+    }
+
+    private int getAccountOperator() {
+        return sharedPreferences.getInt(PREF_OPERATOR_CODE, 0);
+    }
+
+    @Override
+    public void onGetProviderByPhoneResult(int res) {
+
+        saveAccountOperator(res);
+
+        imgOperator.setVisibility(View.VISIBLE);
+        tvOperatorName.setVisibility(View.VISIBLE);
+
+        switch (res) {
+            case 142:
+                spinnerService.post(() -> spinnerService.setSelection(0));//beeline
+                imgOperator.setImageDrawable(getResources().getDrawable(R.drawable.ic_beeline));
+                tvOperatorName.setText(getResources().getString(R.string.beeline));
+                break;
+            case 431:
+                spinnerService.post(() -> spinnerService.setSelection(1));
+                imgOperator.setImageDrawable(getResources().getDrawable(R.drawable.ic_tele2));
+                tvOperatorName.setText(getResources().getString(R.string.tele2));
+                break;  //tele2
+            case 240:
+                spinnerService.post(() -> spinnerService.setSelection(2));
+                imgOperator.setImageDrawable(getResources().getDrawable(R.drawable.altel));
+                tvOperatorName.setText(getResources().getString(R.string.altel));
+                break;  //altel
+            case 644:
+                spinnerService.post(() -> spinnerService.setSelection(3));
+                imgOperator.setImageDrawable(getResources().getDrawable(R.drawable.ic_activ));
+                tvOperatorName.setText(getResources().getString(R.string.activ));
+                break;  //activ
+            case 643:
+                spinnerService.post(() -> spinnerService.setSelection(4));
+                imgOperator.setImageDrawable(getResources().getDrawable(R.drawable.ic_kcell));
+                tvOperatorName.setText(getResources().getString(R.string.kcell));
+                break;  //kcell
+            case 7882:
+                spinnerService.post(() -> spinnerService.setSelection(5));
+                imgOperator.setImageDrawable(getResources().getDrawable(R.drawable.qiwi));
+                tvOperatorName.setText(getResources().getString(R.string.qiwi));
+                break;  //qiwi
+        }
     }
 
 
     @Override
     public void showCheckPaymentResult(String res) {
         showToast(res);
-//        Toast toast = Toast.makeText(this, "check " + res, Toast.LENGTH_SHORT);
-//        toast.setGravity(Gravity.TOP, 0, 0);
-//        toast.show();
+
+        if (res.equals("success")) {
+            btnAddofflinePayment.setAlpha(1);
+            btnAddofflinePayment.setClickable(true);
+        }
+    }
+
+    @Override
+    public void showAddOfflinePaymentResult(String res) {
+        showToast(res);
+
     }
 
     @OnClick(R.id.btn_check_payment)
     public void onViewClicked() {
-        presenter.checkPaymentRequest(System.currentTimeMillis(), 643,
-                etAmount.getText().toString(), serviceInt, etAccount.getText().toString(),
-                map);
+
+        //generate random id for payId and recId fields and save to sharedpref
+        payAndRecId = System.currentTimeMillis();
+        savePayAndRecId();
+
+        presenter.checkPaymentRequest(payAndRecId, 643,
+                etAmount.getText().toString(), serviceInt, etAccount.getText().toString(), map);
     }
+
+    @OnClick(R.id.btn_addoffline_payment)
+    public void onBtnAddOfflineClicked() {
+        presenter.addOfflinePaymentRequest(getPayAndRecId(), 643,
+                etAmount.getText().toString(), serviceInt, etAccount.getText().toString(), map);
+    }
+
 
 //    @Override
 //    public void showLoading() {

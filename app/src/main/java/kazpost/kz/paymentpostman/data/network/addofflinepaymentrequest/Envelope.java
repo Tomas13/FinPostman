@@ -67,35 +67,35 @@ public class Envelope {
 
     public static class AddOfflinePaymentResponse {
 
-        @Element(name = "responseResult")
-        int responseResult;
+        @Element(name = "responseResult", required = false)
+        String responseResult;
 
         @Element(name = "paymentResult", required = false)
-        int paymentResult;
+        String paymentResult;
 
-        @Element(name = "resultDscr")
+        @Element(name = "resultDscr", required = false)
         String resultDscr;
 
         @Element(name = "date", required = false)
         String date;
 
         @Element(name = "fatal", required = false)
-        boolean fatal;
+        String fatal;
 
         @Element(name = "id", required = false)
-        int id;
+        String id;
 
         @Element(name = "payResult", required = false)
-        int payResult;
+        String payResult;
 
         @Element(name = "saved", required = false)
-        boolean saved;
+        String saved;
 
         @Element(name = "status", required = false)
-        int status;
+        String status;
 
         @Element(name = "uid", required = false)
-        double uid;
+        String uid;
 
         @Element(name = "parserHost", required = false)
         String parserHost;
@@ -103,7 +103,7 @@ public class Envelope {
         @Element(name = "ResponseInfo", required = false)
         ResponseInfo responseInfo;
 
-        public int getResponseResult() {
+        public String getResponseResult() {
             return responseResult;
         }
 
@@ -115,7 +115,7 @@ public class Envelope {
             return responseInfo;
         }
 
-        public int getPaymentResult() {
+        public String getPaymentResult() {
             return paymentResult;
         }
 
@@ -123,27 +123,27 @@ public class Envelope {
             return date;
         }
 
-        public boolean isFatal() {
+        public String isFatal() {
             return fatal;
         }
 
-        public int getId() {
+        public String getId() {
             return id;
         }
 
-        public int getPayResult() {
+        public String getPayResult() {
             return payResult;
         }
 
-        public boolean isSaved() {
+        public String isSaved() {
             return saved;
         }
 
-        public int getStatus() {
+        public String getStatus() {
             return status;
         }
 
-        public double getUid() {
+        public String getUid() {
             return uid;
         }
 

@@ -1,6 +1,6 @@
 package kazpost.kz.paymentpostman.mvp;
 
-public abstract class Presenter<T extends PresenterView> {
+public abstract class BasePresenter<T extends MvpPresenter> {
 
     private T view;
 

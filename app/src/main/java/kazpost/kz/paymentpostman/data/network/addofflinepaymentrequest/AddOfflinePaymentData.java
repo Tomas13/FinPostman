@@ -11,62 +11,62 @@ import org.simpleframework.xml.Root;
 public class AddOfflinePaymentData {
 
     @Element(name = "sch:payId")
-    private int ApayId;
+    private String ApayId;
 
     @Element(name = "sch:fromCurrency")
-    private int BfromCurrency;
+    private String BfromCurrency;
 
     @Element(name = "sch:fromAmount")
-    private int CfromAmount;
+    private String CfromAmount;
 
     @Element(name = "sch:toCurrency")
-    private int DtoCurrency;
+    private String DtoCurrency;
 
     @Element(name = "sch:toAmount")
-    private double EtoAmount;
+    private String EtoAmount;
 
     @Element(name = "sch:service")
-    private int Fservice;
+    private String Fservice;
 
     @Element(name = "sch:account")
-    private int Gaccount;
+    private String Gaccount;
 
     @Element(name = "sch:recId")
-    private int HrecId;
+    private String HrecId;
 
     @Element(name = "sch:date")
     private String Idate;
 
 
-    public void setApayId(int apayId) {
+    public void setApayId(String apayId) {
         ApayId = apayId;
     }
 
-    public void setBfromCurrency(int bfromCurrency) {
+    public void setBfromCurrency(String bfromCurrency) {
         BfromCurrency = bfromCurrency;
     }
 
-    public void setCfromAmount(int cfromAmount) {
+    public void setCfromAmount(String cfromAmount) {
         CfromAmount = cfromAmount;
     }
 
-    public void setDtoCurrency(int dtoCurrency) {
+    public void setDtoCurrency(String dtoCurrency) {
         DtoCurrency = dtoCurrency;
     }
 
-    public void setEtoAmount(double etoAmount) {
+    public void setEtoAmount(String  etoAmount) {
         EtoAmount = etoAmount;
     }
 
-    public void setFservice(int fservice) {
+    public void setFservice(String fservice) {
         Fservice = fservice;
     }
 
-    public void setGaccount(int gaccount) {
+    public void setGaccount(String gaccount) {
         Gaccount = gaccount;
     }
 
-    public void setHrecId(int hrecId) {
+    public void setHrecId(String hrecId) {
         HrecId = hrecId;
     }
 

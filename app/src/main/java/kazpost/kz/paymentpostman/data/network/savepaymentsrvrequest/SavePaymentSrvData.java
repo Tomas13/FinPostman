@@ -15,122 +15,146 @@ public class SavePaymentSrvData {
 
     public static class SavePaymentSrvInfo {
 
-        @Element(name = "UsrCode")
-        String UsrCode;
-        @Element(name = "DepCode")
-        String DepCode;
-        @Element(name = "MunDeaCode")
-        String MunDeaCode;
-        @Element(name = "Data")
+        @Element(name = "sch:UsrCode")
+        String aUsrCode;
+        @Element(name = "sch:DepCode")
+        String bDepCode;
+        @Element(name = "sch:MunDeaCode")
+        String cMunDeaCode;
+        @Element(name = "sch:Data", required = false)
         String Data;
-        @Element(name = "FIO")
-        String FIO;
-        @Element(name = "RNN")
-        String RNN;
-        @Element(name = "ResidFl")
-        String ResidFl;
-        @Element(name = "PeniaFl")
-        String PeniaFl;
-        @Element(name = "KNP")
-        String KNP;
-        @Element(name = "AddDtl")
-        String AddDtl;
-        @Element(name = "ClientType")
-        String ClientType;
-        @Element(name = "PaymentType")
-        String PaymentType;
-        @Element(name = "pFinMonUsr")
-        String pFinMonUsr;
-        @Element(name = "pItemKey")
-        String pItemKey;
-        @Element(name = "Sum")
-        String Sum;
+        @Element(name = "sch:FIO")
+        String eFIO;
+        @Element(name = "sch:RNN", required = false)
+        String fRNN;
+        @Element(name = "sch:ResidFl")
+        String gResidFl;
+        @Element(name = "sch:PeniaFl")
+        String hPeniaFl;
+        @Element(name = "sch:KNP")
+        String iKNP;
+        @Element(name = "sch:AddDtl", required = false)
+        String jAddDtl;
+        @Element(name = "sch:ClientType")
+        String kClientType;
+        @Element(name = "sch:PaymentType")
+        String lPaymentType;
+        @Element(name = "sch:pFinMonUsr", required = false)
+        String mpFinMonUsr;
+        @Element(name = "sch:pItemKey")
+        String npItemKey;
+        @Element(name = "sch:Sum")
+        String oSum;
 
-        public void setUsrCode(String usrCode) {
-            UsrCode = usrCode;
+        public void setaUsrCode(String usrCode) {
+            aUsrCode = usrCode;
         }
 
-        public void setDepCode(String depCode) {
-            DepCode = depCode;
+        public void setbDepCode(String depCode) {
+            bDepCode = depCode;
         }
 
-        public void setMunDeaCode(String munDeaCode) {
-            MunDeaCode = munDeaCode;
+        public void setcMunDeaCode(String munDeaCode) {
+            cMunDeaCode = munDeaCode;
         }
 
         public void setData(String data) {
             Data = data;
         }
 
-        public void setFIO(String FIO) {
-            this.FIO = FIO;
+        public void seteFIO(String FIO) {
+            this.eFIO = FIO;
         }
 
-        public void setRNN(String RNN) {
-            this.RNN = RNN;
+        public void setfRNN(String RNN) {
+            this.fRNN = RNN;
         }
 
-        public void setResidFl(String residFl) {
-            ResidFl = residFl;
+        public void setgResidFl(String residFl) {
+            gResidFl = residFl;
         }
 
-        public void setPeniaFl(String peniaFl) {
-            PeniaFl = peniaFl;
+        public void sethPeniaFl(String peniaFl) {
+            hPeniaFl = peniaFl;
         }
 
-        public void setKNP(String KNP) {
-            this.KNP = KNP;
+        public void setiKNP(String KNP) {
+            this.iKNP = KNP;
         }
 
-        public void setAddDtl(String addDtl) {
-            AddDtl = addDtl;
+        public void setjAddDtl(String addDtl) {
+            jAddDtl = addDtl;
         }
 
-        public void setClientType(String clientType) {
-            ClientType = clientType;
+        public void setkClientType(String clientType) {
+            kClientType = clientType;
         }
 
-        public void setPaymentType(String paymentType) {
-            PaymentType = paymentType;
+        public void setlPaymentType(String paymentType) {
+            lPaymentType = paymentType;
         }
 
-        public void setpFinMonUsr(String pFinMonUsr) {
-            this.pFinMonUsr = pFinMonUsr;
+        public void setmpFinMonUsr(String pFinMonUsr) {
+            this.mpFinMonUsr = pFinMonUsr;
         }
 
-        public void setpItemKey(String pItemKey) {
-            this.pItemKey = pItemKey;
+        public void setnpItemKey(String pItemKey) {
+            this.npItemKey = pItemKey;
         }
 
-        public void setSum(String sum) {
-            Sum = sum;
+        public void setoSum(String sum) {
+            oSum = sum;
         }
     }
 
+    @Element(name = "sch:MunSrv")
     public static class MunSrv {
 
-        @Element(name = "Code")
-        private String code;
+        @Element(name = "sch:Code")
+        private String acode;
 
-        @Element(name = "Value")
-        private String value;
+        @Element(name = "sch:Value")
+        private String bvalue;
 
-        @Element(name = "SrvID")
-        private String srvId;
+        @Element(name = "sch:SrvID")
+        private String csrvId;
 
+        public String getAcode() {
+            return acode;
+        }
+
+        public void setAcode(String acode) {
+            this.acode = acode;
+        }
+
+        public String getBvalue() {
+            return bvalue;
+        }
+
+        public void setBvalue(String bvalue) {
+            this.bvalue = bvalue;
+        }
+
+        public String getCsrvId() {
+            return csrvId;
+        }
+
+        public void setCsrvId(String srvId) {
+            this.csrvId = srvId;
+        }
     }
 
     @Element(name = "sch:SavePaymentSrvInfo")
-    private SavePaymentSrvInfo savePaymentSrvInfo;
+    private SavePaymentSrvInfo asavePaymentSrvInfo;
 
     @ElementList(name = "sch:MunSrvs")
-    private List<MunSrv> munSrvList;
+    private List<MunSrv> bmunSrvList;
 
     public void setSavePaymentSrvInfo(SavePaymentSrvInfo savePaymentSrvInfo) {
-        this.savePaymentSrvInfo = savePaymentSrvInfo;
+        this.asavePaymentSrvInfo = savePaymentSrvInfo;
     }
 
     public void setMunSrvList(List<MunSrv> munSrvList) {
-        this.munSrvList = munSrvList;
+        this.bmunSrvList = munSrvList;
     }
 }

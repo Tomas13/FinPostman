@@ -6,6 +6,8 @@ import kazpost.kz.paymentpostman.data.network.addofflinepaymentrequest.AddOfflin
 import kazpost.kz.paymentpostman.data.network.checkpaymentmodels.CheckPaymentEnvelope;
 import kazpost.kz.paymentpostman.data.network.checkpaymentmodels.Envelope;
 import kazpost.kz.paymentpostman.data.network.getpaymentstatusrequest.GetPaymentStatusEnvelope;
+import kazpost.kz.paymentpostman.data.network.getproviderbyphone.GetProviderByPhoneEnvelope;
+import kazpost.kz.paymentpostman.data.network.savepaymentsrvrequest.SavePaymentSrvEnvelope;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
@@ -22,6 +24,10 @@ public interface NetworkService {
     @Headers("Content-Type: text/xml")
     Observable<Envelope> checkPayment(@Body CheckPaymentEnvelope requestEnvelope);
 
+    @POST("wfpayment_off/endpoint")
+    @Headers("Content-Type: text/xml")
+    Observable<kazpost.kz.paymentpostman.data.network.savepaymentsrvrequest.Envelope>
+    savePaymentSrv(@Body SavePaymentSrvEnvelope requestEnvelope);
 
 
     @POST("qiwi/qiwi.wsdl")
@@ -34,4 +40,9 @@ public interface NetworkService {
     Observable<kazpost.kz.paymentpostman.data.network.getpaymentstatusrequest.Envelope> getPaymentStatus(
             @Body GetPaymentStatusEnvelope requestEnvelope);
 
+
+    @POST("qiwi/qiwi.wsdl")
+    @Headers("Content-Type: text/xml")
+    Observable<kazpost.kz.paymentpostman.data.network.getproviderbyphone.Envelope> getProviderByPhone(
+            @Body GetProviderByPhoneEnvelope requestEnvelope);
 }

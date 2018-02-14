@@ -162,4 +162,16 @@
         <item>Платёж отменён через отдел отмен</item>
     </string-array>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="pay">Оплатить</string>
+    <string name="check_payment">Check Payment</string>
+    <string name="hint_number">Номер: 7071234567</string>
+    <string name="beeline">Beeline</string>
+    <string name="qiwi">Qiwi</string>
+    <string name="kcell">Kcell</string>
+    <string name="activ">Activ</string>
+    <string name="altel">Altel</string>
+    <string name="tele2">Tele2</string>
+
 </resources>

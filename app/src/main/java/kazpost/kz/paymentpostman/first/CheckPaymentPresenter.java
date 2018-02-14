@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
+import org.reactivestreams.Subscription;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.convert.AnnotationStrategy;
 import org.simpleframework.xml.core.Persister;
@@ -17,14 +18,22 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import kazpost.kz.paymentpostman.Const;
 import kazpost.kz.paymentpostman.data.network.NetworkService;
+import kazpost.kz.paymentpostman.data.network.addofflinepaymentrequest.AddOfflinePaymentBody;
+import kazpost.kz.paymentpostman.data.network.addofflinepaymentrequest.AddOfflinePaymentData;
+import kazpost.kz.paymentpostman.data.network.addofflinepaymentrequest.AddOfflinePaymentEnvelope;
 import kazpost.kz.paymentpostman.data.network.checkpaymentmodels.CheckPaymentBody;
 import kazpost.kz.paymentpostman.data.network.checkpaymentmodels.CheckPaymentData;
 import kazpost.kz.paymentpostman.data.network.checkpaymentmodels.CheckPaymentEnvelope;
-import kazpost.kz.paymentpostman.mvp.MVPBaseActivity;
-import kazpost.kz.paymentpostman.mvp.Presenter;
+import kazpost.kz.paymentpostman.data.network.getproviderbyphone.GetProviderBody;
+import kazpost.kz.paymentpostman.data.network.getproviderbyphone.GetProviderByPhoneEnvelope;
+import kazpost.kz.paymentpostman.data.network.getproviderbyphone.GetProviderData;
+import kazpost.kz.paymentpostman.mvp.BaseActivity;
+import kazpost.kz.paymentpostman.mvp.BasePresenter;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -36,7 +45,10 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
  * Created by root on 1/23/18.
  */
 
-public class CheckPaymentPresenter extends Presenter<CheckView> {
+public class CheckPaymentPresenter extends BasePresenter<CheckView> implements CheckPresenter {
+
+
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
 
 
     private static final String TAG = "Presn";
@@ -52,13 +64,14 @@ public class CheckPaymentPresenter extends Presenter<CheckView> {
     }
 
 
+    @Override
     //    Запрос на проверку возможности оплаты (check) запрос
     public void checkPaymentRequest(long payId, int currency, String amount, int service, String account, LinkedHashMap<String, String> errorMap) {
 
         getView().showLoading();
 
         int cacheSize = 10 * 1024 * 1024;
-        File cacheDir = ((MVPBaseActivity) getView()).getCacheDir();
+        File cacheDir = ((BaseActivity) getView()).getCacheDir();
         Cache cache = new Cache(cacheDir, cacheSize);
 
         Strategy strategy = new AnnotationStrategy();
@@ -122,104 +135,143 @@ public class CheckPaymentPresenter extends Presenter<CheckView> {
     }
 
 
-    //<!--  запроса на создание платежа -->
-//    public void AddOfflinePaymentRequest() {
-//
-//        int cacheSize = 10 * 1024 * 1024;
-//        File cacheDir = ((BaseActivity) getView()).getCacheDir();
-//        Cache cache = new Cache(cacheDir, cacheSize);
-//
-//        Strategy strategy = new AnnotationStrategy();
-//        Serializer serializer = new Persister(strategy);
-//
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .addConverterFactory(SimpleXmlConverterFactory.create(serializer))
-//                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-//                .baseUrl(Const.BASE_URL_QIWI)
-//                .client(provideOkhttpClient(cache))
-//                .build();
-//
-//        NetworkService networkService = retrofit.create(NetworkService.class);
-//
-//        AddOfflinePaymentEnvelope addOfflinePaymentEnvelope = new AddOfflinePaymentEnvelope();
-//        AddOfflinePaymentData data = new AddOfflinePaymentData();
-//        AddOfflinePaymentBody body = new AddOfflinePaymentBody();
-//
-//        data.setApayId();
-//        data.setBfromCurrency();
-//        data.setCfromAmount();
-//        data.setDtoCurrency();
-//        data.setEtoAmount();
-//        data.setFservice();
-//        data.setGaccount();
-//        data.setHrecId();
-//        data.setIdate();
-//
-//        body.setAddOfflinePaymentData(data);
-//
-//        networkService.addOfflinePayment(addOfflinePaymentEnvelope)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(envelope -> {
-//                    envelope.getBody().getAddOfflinePaymentResponse().getPaymentResult();
-//                }, throwable -> {
-//                    Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
-//                });
-//
-//        getView().showCheckPaymentResult();
-//    }
+    public void addOfflinePaymentRequest(long payId, int currency, String amount, int service, String account, LinkedHashMap<String, String> errorMap) {
+
+        getView().showLoading();
 
 
-//    public void AddOfflinePaymentRequest() {
-//
-//        int cacheSize = 10 * 1024 * 1024;
-//        File cacheDir = ((BaseActivity) getView()).getCacheDir();
-//        Cache cache = new Cache(cacheDir, cacheSize);
-//
-//        Strategy strategy = new AnnotationStrategy();
-//        Serializer serializer = new Persister(strategy);
-//
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .addConverterFactory(SimpleXmlConverterFactory.create(serializer))
-//                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-//                .baseUrl(Const.BASE_URL_QIWI)
-//                .client(provideOkhttpClient(cache))
-//                .build();
-//
-//        NetworkService networkService = retrofit.create(NetworkService.class);
-//
-//        AddOfflinePaymentEnvelope addOfflinePaymentEnvelope = new AddOfflinePaymentEnvelope();
-//        AddOfflinePaymentData data = new AddOfflinePaymentData();
-//        AddOfflinePaymentBody body = new AddOfflinePaymentBody();
-//
-//        data.setApayId();
-//        data.setBfromCurrency();
-//        data.setCfromAmount();
-//        data.setDtoCurrency();
-//        data.setEtoAmount();
-//        data.setFservice();
-//        data.setGaccount();
-//        data.setHrecId();
-//        data.setIdate();
-//
-//        body.setAddOfflinePaymentData(data);
-//
-//        networkService.addOfflinePayment(addOfflinePaymentEnvelope)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(envelope -> {
-//                    envelope.getBody().getAddOfflinePaymentResponse().getPaymentResult();
-//                }, throwable -> {
-//                    Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
-//                });
-//
-//        getView().showCheckPaymentResult();
-//    }
+        int cacheSize = 10 * 1024 * 1024;
+        File cacheDir = ((BaseActivity) getView()).getCacheDir();
+        Cache cache = new Cache(cacheDir, cacheSize);
+
+        Strategy strategy = new AnnotationStrategy();
+        Serializer serializer = new Persister(strategy);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(SimpleXmlConverterFactory.create(serializer))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .baseUrl(Const.BASE_URL_QIWI)
+                .client(provideOkhttpClient(cache))
+                .build();
+
+        NetworkService networkService = retrofit.create(NetworkService.class);
+
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+        String formatted = format1.format(cal.getTime());
+
+
+        AddOfflinePaymentEnvelope addOfflinePaymentEnvelope = new AddOfflinePaymentEnvelope();
+        AddOfflinePaymentData data = new AddOfflinePaymentData();
+        AddOfflinePaymentBody body = new AddOfflinePaymentBody();
+
+        data.setApayId(Long.toString(payId));
+        data.setBfromCurrency(Integer.toString(currency));
+        data.setCfromAmount(amount);
+        data.setDtoCurrency(Integer.toString(currency));
+        data.setEtoAmount(amount);
+        data.setFservice(Integer.toString(service));
+        data.setGaccount(account);
+        data.setHrecId(Long.toString(payId));
+        data.setIdate(formatted);
+
+        body.setAddOfflinePaymentData(data);
+        addOfflinePaymentEnvelope.setAddOfflinePaymentBody(body);
+
+        Disposable disposable = networkService.addOfflinePayment(addOfflinePaymentEnvelope)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(envelope -> {
+//                    getView().showAddOfflinePaymentResult();
+
+                    getView().hideLoading();
+
+                    String respCode = envelope.getBody().getAddOfflinePaymentResponse().getResponseInfo().getResponseCode();
+                    String respText = envelope.getBody().getAddOfflinePaymentResponse().getResponseInfo().getResponseText();
+
+                    if (respCode.equals("0")) {
+                        getView().showAddOfflinePaymentResult(respText);
+                    } else {
+                        getView().showAddOfflinePaymentResult(errorMap.get(respCode));
+                    }
+
+
+                    ((BaseActivity) getView()).showToast(envelope.getBody().getAddOfflinePaymentResponse().getPaymentResult() + "");
+
+                }, throwable -> {
+
+                    getView().hideLoading();
+
+                    ((BaseActivity) getView()).showToast(throwable.getMessage());
+                    Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
+                });
+
+
+        compositeDisposable.add(disposable);
+    }
 
 
     @Override
     public void destroy() {
+        compositeDisposable.clear();
+    }
+
+    public void getProviderByPhone(String account, LinkedHashMap<String, String> errorMap) {
+
+        getView().showLoading();
+
+        int cacheSize = 10 * 1024 * 1024;
+        File cacheDir = ((BaseActivity) getView()).getCacheDir();
+        Cache cache = new Cache(cacheDir, cacheSize);
+
+        Strategy strategy = new AnnotationStrategy();
+        Serializer serializer = new Persister(strategy);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(SimpleXmlConverterFactory.create(serializer))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .baseUrl(Const.BASE_URL_QIWI)
+                .client(provideOkhttpClient(cache))
+                .build();
+
+        NetworkService networkService = retrofit.create(NetworkService.class);
+
+
+        GetProviderByPhoneEnvelope getProviderByPhoneEnvelope = new GetProviderByPhoneEnvelope();
+        GetProviderBody body = new GetProviderBody();
+        GetProviderData data = new GetProviderData();
+        data.setPhone(account);
+        body.setGetProviderData(data);
+        getProviderByPhoneEnvelope.setGetProviderBody(body);
+
+       Disposable disposable = networkService.getProviderByPhone(getProviderByPhoneEnvelope)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(envelope -> {
+//                    getView().showAddOfflinePaymentResult();
+
+                    getView().hideLoading();
+
+                    String respCode = envelope.getBody().getProviderResponse().getResponseInfo().getResponseCode();
+                    String respText = envelope.getBody().getProviderResponse().getResponseInfo().getResponseText();
+
+                    if (respCode.equals("0")) {
+                        getView().onGetProviderByPhoneResult(Integer.valueOf(envelope.getBody().getProviderResponse().getProviderId()));
+                    } else {
+                        ((BaseActivity) getView()).showToast(errorMap.get(respCode));
+                    }
+
+                }, throwable -> {
+
+                    getView().hideLoading();
+
+                    ((BaseActivity) getView()).showToast(throwable.getMessage());
+                    Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
+                });
+
+        compositeDisposable.add(disposable);
 
     }
 
 }
+

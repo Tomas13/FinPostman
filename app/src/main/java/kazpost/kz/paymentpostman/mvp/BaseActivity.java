@@ -10,14 +10,14 @@ import android.widget.Toast;
 
 import kazpost.kz.paymentpostman.CommonUtils;
 
-public class MVPBaseActivity<V extends PresenterView> extends AppCompatActivity implements MvpView {
+public class BaseActivity<V extends MvpPresenter> extends AppCompatActivity implements MvpView {
 
 
     private ProgressDialog mProgressDialog;
 
-    private Presenter<V> presenter;
+    private BasePresenter<V> presenter;
 
-    protected void addPresenter(Presenter<V> presenter, V presenterView) {
+    public void addPresenter(BasePresenter<V> presenter, V presenterView) {
         this.presenter = presenter;
         presenter.attachView(presenterView);
     }

@@ -13,8 +13,8 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:visibility="gone"
         android:layout_marginTop="8dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,15 +24,13 @@
         android:id="@+id/et_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:ems="10"
         android:hint="Сумма"
+        android:imeOptions="flagNoFullscreen"
         android:inputType="numberSigned"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintStart_toStartOf="@+id/et_account"
+        app:layout_constraintTop_toBottomOf="@+id/et_account" />
 
     <TextView
         android:id="@+id/textView"
@@ -51,24 +49,28 @@
         android:id="@+id/et_account"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
         android:ems="10"
-        android:hint="Номер получателя"
+        android:hint="@string/hint_number"
+        android:imeOptions="flagNoFullscreen"
         android:inputType="phone"
-        app:layout_constraintStart_toStartOf="@+id/et_amount"
-        app:layout_constraintTop_toBottomOf="@+id/et_amount" />
+        app:layout_constraintEnd_toStartOf="@+id/img_operator"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <Button
         android:id="@+id/btn_check_payment"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:text="Check Payment"
+        android:text="@string/check_payment"
         android:textColor="@color/colorPrimaryDark"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_addoffline_payment"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner_service" />
 
@@ -83,5 +85,48 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_account" />
+        app:layout_constraintTop_toBottomOf="@+id/et_amount" />
+
+    <Button
+        android:id="@+id/btn_addoffline_payment"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0.5"
+        android:clickable="false"
+        android:text="@string/pay"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_check_payment"
+        app:layout_constraintTop_toTopOf="@+id/btn_check_payment" />
+
+
+    <ImageView
+        android:id="@+id/img_operator"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:scaleType="fitXY"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/et_account"
+        app:layout_constraintTop_toTopOf="@+id/et_account"
+        app:srcCompat="@drawable/ic_activ" />
+
+    <TextView
+        android:id="@+id/tv_operator_name"
+        style="@style/Base.TextAppearance.AppCompat.Widget.ActionMode.Subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
+        android:text="Activ"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/img_operator"
+        app:layout_constraintStart_toStartOf="@+id/img_operator"
+        app:layout_constraintTop_toBottomOf="@+id/img_operator" />
 </android.support.constraint.ConstraintLayout>
