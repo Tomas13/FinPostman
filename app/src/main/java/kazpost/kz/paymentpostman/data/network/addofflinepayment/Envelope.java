@@ -1,4 +1,4 @@
-package kazpost.kz.paymentpostman.data.network.addofflinepaymentrequest;
+package kazpost.kz.paymentpostman.data.network.addofflinepayment;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;

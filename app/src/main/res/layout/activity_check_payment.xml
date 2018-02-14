@@ -129,4 +129,19 @@
         app:layout_constraintEnd_toEndOf="@+id/img_operator"
         app:layout_constraintStart_toStartOf="@+id/img_operator"
         app:layout_constraintTop_toBottomOf="@+id/img_operator" />
+
+    <TextView
+        style="@style/Base.TextAppearance.AppCompat.Medium"
+        android:id="@+id/tv_commision"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/commision"
+        app:layout_constraintBottom_toBottomOf="@+id/et_amount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/et_amount"
+        app:layout_constraintTop_toTopOf="@+id/et_amount" />
 </android.support.constraint.ConstraintLayout>

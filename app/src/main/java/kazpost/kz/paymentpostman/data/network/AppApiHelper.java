@@ -1,10 +1,10 @@
 package kazpost.kz.paymentpostman.data.network;
 
 import io.reactivex.Observable;
-import kazpost.kz.paymentpostman.data.network.addofflinepaymentrequest.AddOfflinePaymentEnvelope;
+import kazpost.kz.paymentpostman.data.network.addofflinepayment.AddOfflinePaymentEnvelope;
 import kazpost.kz.paymentpostman.data.network.checkpaymentmodels.CheckPaymentEnvelope;
 import kazpost.kz.paymentpostman.data.network.checkpaymentmodels.Envelope;
-import kazpost.kz.paymentpostman.data.network.getpaymentstatusrequest.GetPaymentStatusEnvelope;
+import kazpost.kz.paymentpostman.data.network.getpaymentstatus.GetPaymentStatusEnvelope;
 
 /**
  * Created by root on 1/23/18.
@@ -20,13 +20,13 @@ public class AppApiHelper implements ApiHelper {
     }
 
     @Override
-    public Observable<kazpost.kz.paymentpostman.data.network.addofflinepaymentrequest.Envelope> addOfflinePayment(
+    public Observable<kazpost.kz.paymentpostman.data.network.addofflinepayment.Envelope> addOfflinePayment(
             AddOfflinePaymentEnvelope addOfflinePaymentEnvelope) {
         return networkService.addOfflinePayment(addOfflinePaymentEnvelope);
     }
 
     @Override
-    public Observable<kazpost.kz.paymentpostman.data.network.getpaymentstatusrequest.Envelope> getPaymentStatus(
+    public Observable<kazpost.kz.paymentpostman.data.network.getpaymentstatus.Envelope> getPaymentStatus(
             GetPaymentStatusEnvelope getPaymentStatusEnvelope) {
         return networkService.getPaymentStatus(getPaymentStatusEnvelope);
     }

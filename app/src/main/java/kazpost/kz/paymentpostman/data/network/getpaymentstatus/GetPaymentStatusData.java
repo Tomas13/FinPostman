@@ -1,4 +1,4 @@
-package kazpost.kz.paymentpostman.data.network.getpaymentstatusrequest;
+package kazpost.kz.paymentpostman.data.network.getpaymentstatus;
 
 /**
  * Created by root on 4/19/17.

@@ -1,6 +1,7 @@
 package kazpost.kz.paymentpostman.first;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
@@ -14,11 +15,14 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import kazpost.kz.paymentpostman.R;
 import kazpost.kz.paymentpostman.mvp.BaseActivity;
 
@@ -35,6 +39,8 @@ public class CheckPaymentActivity extends BaseActivity<CheckView> implements Che
     ImageView imgOperator;
     @BindView(R.id.tv_operator_name)
     TextView tvOperatorName;
+    @BindView(R.id.tv_commision)
+    TextView tvCommision;
 
     private CheckPaymentPresenter presenter;
     @BindView(R.id.et_amount)
@@ -69,14 +75,31 @@ public class CheckPaymentActivity extends BaseActivity<CheckView> implements Che
 
         initErrorMap();
         setSpinnerSelectionListener();
+
+        initSumFieldForCommision();
     }
+
+    private void initSumFieldForCommision() {
+
+        RxTextView.textChanges(etAmount)
+                .skipInitialValue()
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(sum -> presenter.calcPaymentCom("AST_GAUKHARO", sum.toString(), getAccountOperator(), map));
+    }
+
 
     private void getPhone() {
         RxTextView.textChanges(etAccount).skipInitialValue()
+                .map(charSequence -> charSequence.length() == 10)
+                .map(aBoolean -> aBoolean ? Color.BLACK : Color.RED)
+                .subscribe(color -> etAccount.setTextColor(color));
+
+
+        RxTextView.textChanges(etAccount).skipInitialValue()
                 .filter(charSequence -> charSequence.length() == 10)
-                .subscribe(charSequence -> {
-                    presenter.getProviderByPhone(charSequence.toString(), map);
-                });
+                .subscribe(charSequence -> presenter.getProviderByPhone(charSequence.toString(), map));
+
     }
 
     private void initErrorMap() {
@@ -117,14 +140,7 @@ public class CheckPaymentActivity extends BaseActivity<CheckView> implements Che
     }
 
     private Long getPayAndRecId() {
-
-        if (sharedPreferences.contains(PREF_PAY_REC_ID)) {
-            payAndRecId = sharedPreferences.getLong(PREF_PAY_REC_ID, 0);
-        } else {
-            showToast("Нет в памяти payId");
-        }
-
-        return payAndRecId;
+        return payAndRecId = sharedPreferences.getLong(PREF_PAY_REC_ID, 0);
     }
 
     private void savePayAndRecId() {
@@ -160,7 +176,7 @@ public class CheckPaymentActivity extends BaseActivity<CheckView> implements Che
                 break;  //tele2
             case 240:
                 spinnerService.post(() -> spinnerService.setSelection(2));
-                imgOperator.setImageDrawable(getResources().getDrawable(R.drawable.altel));
+                imgOperator.setImageDrawable(getResources().getDrawable(R.drawable.altelg));
                 tvOperatorName.setText(getResources().getString(R.string.altel));
                 break;  //altel
             case 644:
@@ -178,6 +194,10 @@ public class CheckPaymentActivity extends BaseActivity<CheckView> implements Che
                 imgOperator.setImageDrawable(getResources().getDrawable(R.drawable.qiwi));
                 tvOperatorName.setText(getResources().getString(R.string.qiwi));
                 break;  //qiwi
+            case -1:
+                imgOperator.setVisibility(View.INVISIBLE);
+                tvOperatorName.setVisibility(View.INVISIBLE);
+                break;
         }
     }
 
@@ -195,7 +215,12 @@ public class CheckPaymentActivity extends BaseActivity<CheckView> implements Che
     @Override
     public void showAddOfflinePaymentResult(String res) {
         showToast(res);
+    }
 
+    @Override
+    public void onCalcPaymentComResult(int i) {
+        showToast("OnCalcPaymentResult" + i);
+        tvCommision.setText(i + " тенге");
     }
 
     @OnClick(R.id.btn_check_payment)
@@ -215,8 +240,14 @@ public class CheckPaymentActivity extends BaseActivity<CheckView> implements Che
                 etAmount.getText().toString(), serviceInt, etAccount.getText().toString(), map);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        sharedPreferences = null;
+    }
 
-//    @Override
+
+    //    @Override
 //    public void showLoading() {
 //        indeterminateBar.setVisibility(View.VISIBLE);
 //    }

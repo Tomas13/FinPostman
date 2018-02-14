@@ -1,4 +1,4 @@
-package kazpost.kz.paymentpostman.data.network.savepaymentsrvrequest;
+package kazpost.kz.paymentpostman.data.network.savepaymentsrv;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;

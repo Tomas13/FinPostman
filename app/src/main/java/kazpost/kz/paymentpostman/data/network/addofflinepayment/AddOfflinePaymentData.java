@@ -1,4 +1,4 @@
-package kazpost.kz.paymentpostman.data.network.addofflinepaymentrequest;
+package kazpost.kz.paymentpostman.data.network.addofflinepayment;
 
 /**
  * Created by root on 4/19/17.

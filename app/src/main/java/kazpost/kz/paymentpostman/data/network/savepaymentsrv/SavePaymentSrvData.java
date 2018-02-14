@@ -1,4 +1,4 @@
-package kazpost.kz.paymentpostman.data.network.savepaymentsrvrequest;
+package kazpost.kz.paymentpostman.data.network.savepaymentsrv;
 
 /**
  * Created by root on 4/19/17.

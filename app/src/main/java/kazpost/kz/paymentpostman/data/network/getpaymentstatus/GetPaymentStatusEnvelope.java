@@ -1,4 +1,4 @@
-package kazpost.kz.paymentpostman.data.network.getpaymentstatusrequest;
+package kazpost.kz.paymentpostman.data.network.getpaymentstatus;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Namespace;

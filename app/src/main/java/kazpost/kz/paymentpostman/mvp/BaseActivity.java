@@ -3,6 +3,7 @@ package kazpost.kz.paymentpostman.mvp;
 
 import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -13,6 +14,7 @@ import kazpost.kz.paymentpostman.CommonUtils;
 public class BaseActivity<V extends MvpPresenter> extends AppCompatActivity implements MvpView {
 
 
+    private static final String TAG = "BaseActivity";
     private ProgressDialog mProgressDialog;
 
     private BasePresenter<V> presenter;
