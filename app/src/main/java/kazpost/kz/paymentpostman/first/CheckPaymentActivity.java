@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
@@ -71,18 +72,21 @@ public class CheckPaymentActivity extends BaseActivity<CheckView> implements Che
 
         sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
 
-        getPhone();
 
         initErrorMap();
         setSpinnerSelectionListener();
 
         initSumFieldForCommision();
+
+        getPhone();
+
     }
 
     private void initSumFieldForCommision() {
 
         RxTextView.textChanges(etAmount)
                 .skipInitialValue()
+                .filter(charSequence -> charSequence.length() > 1)
                 .debounce(500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(sum -> presenter.calcPaymentCom("AST_GAUKHARO", sum.toString(), getAccountOperator(), map));
@@ -99,6 +103,9 @@ public class CheckPaymentActivity extends BaseActivity<CheckView> implements Che
         RxTextView.textChanges(etAccount).skipInitialValue()
                 .filter(charSequence -> charSequence.length() == 10)
                 .subscribe(charSequence -> presenter.getProviderByPhone(charSequence.toString(), map));
+
+
+        presenter.getPaymentStatus(String.valueOf(getPayAndRecId()), map);
 
     }
 
@@ -221,6 +228,11 @@ public class CheckPaymentActivity extends BaseActivity<CheckView> implements Che
     public void onCalcPaymentComResult(int i) {
         showToast("OnCalcPaymentResult" + i);
         tvCommision.setText(i + " тенге");
+    }
+
+    @Override
+    public void onGetPaymentStatus(String result) {
+        Toast.makeText(this, "onGetPayment " + result, Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.btn_check_payment)

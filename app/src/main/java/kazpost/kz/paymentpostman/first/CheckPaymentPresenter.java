@@ -32,6 +32,9 @@ import kazpost.kz.paymentpostman.data.network.calcpaymentcommissionr.CalcPayment
 import kazpost.kz.paymentpostman.data.network.checkpaymentmodels.CheckPaymentBody;
 import kazpost.kz.paymentpostman.data.network.checkpaymentmodels.CheckPaymentData;
 import kazpost.kz.paymentpostman.data.network.checkpaymentmodels.CheckPaymentEnvelope;
+import kazpost.kz.paymentpostman.data.network.getpaymentstatus.GetPaymentStatusBody;
+import kazpost.kz.paymentpostman.data.network.getpaymentstatus.GetPaymentStatusData;
+import kazpost.kz.paymentpostman.data.network.getpaymentstatus.GetPaymentStatusEnvelope;
 import kazpost.kz.paymentpostman.data.network.getproviderbyphone.GetProviderBody;
 import kazpost.kz.paymentpostman.data.network.getproviderbyphone.GetProviderByPhoneEnvelope;
 import kazpost.kz.paymentpostman.data.network.getproviderbyphone.GetProviderData;
@@ -50,7 +53,7 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 
 public class CheckPaymentPresenter extends BasePresenter<CheckView> implements CheckPresenter {
 
-    CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     private static final String TAG = "Presn";
 
@@ -236,7 +239,6 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
 
         NetworkService networkService = retrofit.create(NetworkService.class);
 
-
         GetProviderByPhoneEnvelope getProviderByPhoneEnvelope = new GetProviderByPhoneEnvelope();
         GetProviderBody body = new GetProviderBody();
         GetProviderData data = new GetProviderData();
@@ -248,7 +250,6 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(envelope -> {
-//                    getView().showAddOfflinePaymentResult();
 
                     getView().hideLoading();
 
@@ -262,24 +263,18 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
                         getView().onGetProviderByPhoneResult(-1);
                     }
 
-
                     closeCache(cache);
 
-
                 }, throwable -> {
-
                     getView().hideLoading();
 
                     ((BaseActivity) getView()).showToast(throwable.getMessage());
                     Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
 
                     closeCache(cache);
-
                 });
 
         compositeDisposable.add(disposable);
-
-
     }
 
     public void calcPaymentCom(String login, String sum, int accountOperator, LinkedHashMap<String, String> errorMap) {
@@ -301,7 +296,6 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
                 .build();
 
         NetworkService networkService = retrofit.create(NetworkService.class);
-
 
         CalcPaymentComEnvelope calcPaymentComEnvelope = new CalcPaymentComEnvelope();
         CalcPaymentComBody body = new CalcPaymentComBody();
@@ -330,7 +324,7 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
                     String respCode = envelope.getBody().getCalcPaymentResponse().getResponseInfo().getResponseCode();
                     String respText = envelope.getBody().getCalcPaymentResponse().getResponseInfo().getResponseText();
 
-                    if (respText.equals("")){
+                    if (respText.equals("")) {
                         ((BaseActivity) getView()).showToast("Нет комисии");
                     }
 
@@ -340,20 +334,74 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
                         ((BaseActivity) getView()).showToast(respText);
                         getView().onCalcPaymentComResult(0);
                     }
-
-
                     closeCache(cache);
-
-
                 }, throwable -> {
-
                     getView().hideLoading();
 
                     ((BaseActivity) getView()).showToast(throwable.getMessage());
                     Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
 
                     closeCache(cache);
+                });
 
+        compositeDisposable.add(disposable);
+    }
+
+    public void getPaymentStatus(String payId, LinkedHashMap<String, String> errorMap) {
+        getView().showLoading();
+
+        int cacheSize = 10 * 1024 * 1024;
+        File cacheDir = ((BaseActivity) getView()).getCacheDir();
+        Cache cache = new Cache(cacheDir, cacheSize);
+
+        Strategy strategy = new AnnotationStrategy();
+        Serializer serializer = new Persister(strategy);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(SimpleXmlConverterFactory.create(serializer))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .baseUrl(Const.BASE_URL_QIWI)
+                .client(provideOkhttpClient(cache))
+                .build();
+
+        NetworkService networkService = retrofit.create(NetworkService.class);
+
+        GetPaymentStatusEnvelope getPaymentStatusEnvelope = new GetPaymentStatusEnvelope();
+        GetPaymentStatusBody body = new GetPaymentStatusBody();
+        GetPaymentStatusData data = new GetPaymentStatusData();
+        data.setApayId(payId);
+
+        body.setGetPaymentStatusData(data);
+        getPaymentStatusEnvelope.setGetPaymentStatusBody(body);
+
+        Disposable disposable = networkService.getPaymentStatus(getPaymentStatusEnvelope)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(envelope -> {
+
+                    getView().hideLoading();
+
+                    String respCode = envelope.getBody().getGetPaymentStatusResponse().getResponseInfo().getResponseCode();
+                    String respText = envelope.getBody().getGetPaymentStatusResponse().getResponseInfo().getResponseText();
+
+                    if (respCode.equals("0")) {
+                        getView().onGetPaymentStatus(respText);
+                    } else {
+                        getView().showCheckPaymentResult(errorMap.get(respCode));
+
+                    }
+
+                    ((BaseActivity) getView()).showToast(respCode);
+
+                    closeCache(cache);
+
+                }, throwable -> {
+                    getView().hideLoading();
+
+                    ((BaseActivity) getView()).showToast(throwable.getMessage());
+                    Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
+
+                    closeCache(cache);
                 });
 
         compositeDisposable.add(disposable);
@@ -369,7 +417,6 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
             }
         }
     }
-
 
     @Override
     public void destroy() {

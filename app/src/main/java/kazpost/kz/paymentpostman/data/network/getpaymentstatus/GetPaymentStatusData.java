@@ -11,9 +11,9 @@ import org.simpleframework.xml.Root;
 public class GetPaymentStatusData {
 
     @Element(name = "sch:payId")
-    private int ApayId;
+    private String ApayId;
 
-    public void setApayId(int apayId) {
+    public void setApayId(String apayId) {
         ApayId = apayId;
     }
 

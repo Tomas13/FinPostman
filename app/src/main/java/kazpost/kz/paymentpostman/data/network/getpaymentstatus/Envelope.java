@@ -68,12 +68,12 @@ public class Envelope {
     public static class GetPaymentStatusResponse {
 
         @Element(name = "responseResult", required = false)
-        int responseResult;
+        String responseResult;
 
         @Element(name = "statusResult", required = false)
-        int statusResult;
+        String statusResult;
 
-        @Element(name = "resultDscr")
+        @Element(name = "resultDscr", required = false)
         String resultDscr;
 
         @Element(name = "date", required = false)
@@ -83,13 +83,13 @@ public class Envelope {
         boolean fatal;
 
         @Element(name = "id", required = false)
-        int id;
+        String id;
 
         @Element(name = "payResult", required = false)
-        int payResult;
+        String payResult;
 
         @Element(name = "status", required = false)
-        int status;
+        String status;
 
         @Element(name = "uid", required = false)
         double uid;
@@ -104,7 +104,7 @@ public class Envelope {
             return resultDscr;
         }
 
-        public int getResponseResult() {
+        public String getResponseResult() {
             return responseResult;
         }
 
@@ -112,7 +112,7 @@ public class Envelope {
             return responseInfo;
         }
 
-        public int getStatusResult() {
+        public String getStatusResult() {
             return statusResult;
         }
 
@@ -124,15 +124,15 @@ public class Envelope {
             return fatal;
         }
 
-        public int getId() {
+        public String getId() {
             return id;
         }
 
-        public int getPayResult() {
+        public String getPayResult() {
             return payResult;
         }
 
-        public int getStatus() {
+        public String getStatus() {
             return status;
         }
 

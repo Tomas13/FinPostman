@@ -16,4 +16,6 @@ public interface CheckView extends MvpPresenter {
     void hideLoading();
 
     void onCalcPaymentComResult(int i);
+
+    void onGetPaymentStatus(String res);
 }
