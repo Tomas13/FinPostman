@@ -6,10 +6,10 @@ package kazpost.kz.paymentpostman.data.network.savepaymentsrv;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
+import org.simpleframework.xml.Namespace;
 import org.simpleframework.xml.Root;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Root(name = "sch:SavePaymentSrvRequest", strict = false)
 public class SavePaymentSrvData {
@@ -108,7 +108,7 @@ public class SavePaymentSrvData {
         }
     }
 
-    @Element(name = "sch:MunSrv")
+    @Namespace(prefix = "sch", reference = "http://webservices.kazpost.kz/wfpayment/schema")
     public static class MunSrv {
 
         @Element(name = "sch:Code")
@@ -148,7 +148,7 @@ public class SavePaymentSrvData {
     @Element(name = "sch:SavePaymentSrvInfo")
     private SavePaymentSrvInfo asavePaymentSrvInfo;
 
-    @ElementList(name = "sch:MunSrvs")
+    @ElementList(name = "sch:MunSrvs", entry = "MunSrv")
     private ArrayList<MunSrv> bmunSrvList;
 
     public void setSavePaymentSrvInfo(SavePaymentSrvInfo savePaymentSrvInfo) {

@@ -68,82 +68,82 @@ public class Envelope {
 
     public static class SavePaymentSrvResponse {
 
-        @Element(name = "ColvirReferenceId")
+        @Element(name = "ColvirReferenceId", required = false)
         int colvirRefenceId;
 
-        @Element(name = "StatusDoc")
+        @Element(name = "StatusDoc", required = false)
         String statusDoc;
 
-        @Element(name = "StatusDocDescription")
+        @Element(name = "StatusDocDescription", required = false)
         String statusDocDescription;
 
-        @Element(name = "DocNumber")
+        @Element(name = "DocNumber", required = false)
         long docNumber;
 
-        @Element(name = "ColvirOrdID")
+        @Element(name = "ColvirOrdID", required = false)
         long colvirOrdID;
 
-        @Element(name = "ColvirOrdDepID")
+        @Element(name = "ColvirOrdDepID", required = false)
         int colvirOrdDepID;
 
-        @Element(name = "CodeACR")
+        @Element(name = "CodeACR", required = false)
         String codeACR;
 
-        @Element(name = "CodeBCR")
+        @Element(name = "CodeBCR", required = false)
         String codeBCR;
 
-        @Element(name = "NameBCR")
+        @Element(name = "NameBCR", required = false)
         String nameBCR;
 
-        @Element(name = "NameCR")
+        @Element(name = "NameCR", required = false)
         String nameCR;
 
-        @Element(name = "RnnCR")
+        @Element(name = "RnnCR", required = false)
         long RnnCR;
 
-        @Element(name = "KBE")
+        @Element(name = "KBE", required = false)
         int kBE;
 
-        @Element(name = "KOD")
+        @Element(name = "KOD", required = false)
         int kOD;
 
-        @Element(name = "KNP")
+        @Element(name = "KNP", required = false)
         int kNP;
 
-        @Element(name = "Assign")
+        @Element(name = "Assign", required = false)
         String assign;
 
-        @Element(name = "CshCode")
+        @Element(name = "CshCode", required = false)
         String cshCode;
 
-        @Element(name = "DepAdr")
+        @Element(name = "DepAdr", required = false)
         String depAdr;
 
-        @Element(name = "DepCode")
+        @Element(name = "DepCode", required = false)
         String depCode;
-        @Element(name = "DepName")
+        @Element(name = "DepName", required = false)
         String depName;
 
-        @Element(name = "Dord")
+        @Element(name = "Dord", required = false)
         String dord;
-        @Element(name = "Nomer")
+        @Element(name = "Nomer", required = false)
         String nomer;
 
-        @Element(name = "RealTime")
+        @Element(name = "RealTime", required = false)
         String realTime;
-        @Element(name = "Ref")
+        @Element(name = "Ref", required = false)
         String ref;
 
-        @Element(name = "SCOM")
+        @Element(name = "SCOM", required = false)
         String sCON;
 
-        @Element(name = "SumAll")
+        @Element(name = "SumAll", required = false)
         int sumAll;
 
-        @Element(name = "Total")
+        @Element(name = "Total", required = false)
         String total;
 
-        @Element(name = "UsrFio")
+        @Element(name = "UsrFio", required = false)
         String usrFio;
 
         @Element(name = "ResponseInfo", required = false)

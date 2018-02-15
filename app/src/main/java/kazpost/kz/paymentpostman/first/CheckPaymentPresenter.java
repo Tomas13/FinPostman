@@ -15,7 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -127,16 +126,16 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
                     String respText = envelope1.getBody().getCheckPaymentResponse().getResponseInfo().getResponseText();
 
                     if (respCode.equals("0")) {
-                        getView().showCheckPaymentResult(respText);
+                        getView().onCheckPaymentResult(respText);
                     } else {
-                        getView().showCheckPaymentResult(errorMap.get(respCode));
+                        getView().onCheckPaymentResult(errorMap.get(respCode));
                     }
                     closeCache(cache);
 
 
                 }, throwable -> {
                     getView().hideLoading();
-                    getView().showCheckPaymentResult(throwable.getMessage());
+                    getView().onCheckPaymentResult(throwable.getMessage());
                     Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
                     closeCache(cache);
 
@@ -202,9 +201,9 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
                     String respText = envelope.getBody().getAddOfflinePaymentResponse().getResponseInfo().getResponseText();
 
                     if (respCode.equals("0")) {
-                        getView().showAddOfflinePaymentResult(respText);
+                        getView().onAddOfflinePaymentResult(respText);
                     } else {
-                        getView().showAddOfflinePaymentResult(errorMap.get(respCode));
+                        getView().onAddOfflinePaymentResult(errorMap.get(respCode));
                     }
 
 
@@ -329,6 +328,10 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
                     String respCode = envelope.getBody().getCalcPaymentResponse().getResponseInfo().getResponseCode();
                     String respText = envelope.getBody().getCalcPaymentResponse().getResponseInfo().getResponseText();
 
+                    if (envelope.getBody().getCalcPaymentResponse().getCmsAmount() == null) {
+                        getView().onCalcPaymentComResult(0);
+                    }
+
                     if (respText.equals("")) {
                         ((BaseActivity) getView()).showToast("Нет комисии");
                     }
@@ -392,7 +395,7 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
                     if (respCode.equals("0")) {
                         getView().onGetPaymentStatus(respText);
                     } else {
-                        getView().showCheckPaymentResult(errorMap.get(respCode));
+                        getView().onCheckPaymentResult(errorMap.get(respCode));
 
                     }
 
@@ -413,7 +416,8 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
 
     }
 
-    public void savePaymentSrvRequest(String cellOperator, String account, String sum, String payId, String commission) {
+    public void savePaymentSrvRequest(String cellOperator, String account, String sum, String payId,
+                                      String commission, LinkedHashMap<String, String> errorMap) {
 
         getView().showLoading();
 
@@ -487,7 +491,7 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
         String formatted = format1.format(cal.getTime());*/
 
 
-        networkService.savePaymentSrv(savePaymentSrvEnvelope)
+        Disposable disposable = networkService.savePaymentSrv(savePaymentSrvEnvelope)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(envelope1 -> {
@@ -496,18 +500,22 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
                     String respText = envelope1.getBody().getSavePaymentSrvResponse().getResponseInfo().getResponseText();
 
                     if (respCode.equals("0")) {
-                        ((BaseActivity) getView()).showToast(respText);
+                        getView().onSavePaymentSrvResult();
                     } else {
-//                        ((BaseActivity) getView()).showToast(errorMap.get(respCode));
-                        ((BaseActivity) getView()).showToast(respCode);
+                        ((BaseActivity) getView()).showToast(errorMap.get(respCode));
                     }
+                    closeCache(cache);
 
                 }, throwable -> {
                     getView().hideLoading();
                     ((BaseActivity) getView()).showToast(throwable.getMessage());
                     Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
+
+                    closeCache(cache);
+
                 });
 
+        compositeDisposable.add(disposable);
 //        getView().showCheckPaymentResult();
     }
 

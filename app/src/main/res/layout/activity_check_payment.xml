@@ -54,54 +54,27 @@
         android:hint="@string/hint_number"
         android:imeOptions="flagNoFullscreen"
         android:inputType="phone"
+        android:maxLength="10"
         android:minEms="9"
         app:layout_constraintEnd_toStartOf="@+id/img_operator"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-    <Button
-        android:id="@+id/btn_check_payment"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/check_payment"
-        android:textColor="@color/colorPrimaryDark"
-        app:layout_constraintEnd_toStartOf="@+id/btn_addoffline_payment"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_service" />
 
-    <Spinner
-        android:id="@+id/spinner_service"
+    <TextView
+        android:id="@+id/tv_result_sum"
+        style="@style/Base.TextAppearance.AppCompat.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:entries="@array/service"
+        android:text="0 тенге"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_commision"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_commision" />
-
-    <Button
-        android:id="@+id/btn_addoffline_payment"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:alpha="0.5"
-        android:clickable="false"
-        android:enabled="false"
-        android:text="@string/pay"
-        android:textColor="@color/colorPrimaryDark"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btn_check_payment"
-        app:layout_constraintTop_toTopOf="@+id/btn_check_payment" />
-
+        app:layout_constraintTop_toTopOf="@+id/tv_commision" />
 
     <ImageView
         android:id="@+id/img_operator"
@@ -136,22 +109,78 @@
         style="@style/Base.TextAppearance.AppCompat.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/commision"
+        android:text="@string/zero_tenge"
         app:layout_constraintStart_toStartOf="@+id/et_amount"
         app:layout_constraintTop_toBottomOf="@+id/et_amount" />
 
     <Button
         android:id="@+id/btn_calc_commission"
-        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:text="@string/btn_calc"
+        android:text="@string/btn_check"
         android:textColor="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="@+id/et_amount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/et_amount"
         app:layout_constraintTop_toTopOf="@+id/et_amount" />
+
+    <Button
+        android:id="@+id/btn_addoffline_payment"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:alpha="0.5"
+        android:enabled="false"
+        android:text="@string/pay"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintEnd_toStartOf="@+id/btn_send_check"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <Button
+        android:id="@+id/btn_send_check"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:enabled="false"
+        android:alpha="0.5"
+        android:layout_marginStart="24dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:text="@string/send_check"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_addoffline_payment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_addoffline_payment"
+        app:layout_constraintTop_toTopOf="@+id/btn_addoffline_payment" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="@string/commision"
+        app:layout_constraintEnd_toEndOf="@+id/tv_commision"
+        app:layout_constraintStart_toStartOf="@+id/tv_commision"
+        app:layout_constraintTop_toBottomOf="@+id/tv_commision" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="@string/total"
+        app:layout_constraintEnd_toEndOf="@+id/tv_result_sum"
+        app:layout_constraintStart_toStartOf="@+id/tv_result_sum"
+        app:layout_constraintTop_toBottomOf="@+id/tv_result_sum" />
+
 </android.support.constraint.ConstraintLayout>

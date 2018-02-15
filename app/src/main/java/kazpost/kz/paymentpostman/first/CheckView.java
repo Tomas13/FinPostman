@@ -7,9 +7,11 @@ public interface CheckView extends MvpPresenter {
 
     void onGetProviderByPhoneResult(int res);
 
-    void showCheckPaymentResult(String res);
+    void onCheckPaymentResult(String res);
 
-    void showAddOfflinePaymentResult(String res);
+    void onSavePaymentSrvResult();
+
+    void onAddOfflinePaymentResult(String res);
 
     void showLoading();
 
