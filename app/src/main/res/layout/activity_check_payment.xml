@@ -25,10 +25,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:ems="10"
         android:hint="Сумма"
         android:imeOptions="flagNoFullscreen"
         android:inputType="numberSigned"
+        android:minEms="9"
         app:layout_constraintStart_toStartOf="@+id/et_account"
         app:layout_constraintTop_toBottomOf="@+id/et_account" />
 
@@ -51,11 +51,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="12dp"
-        android:focusedByDefault="true"
-        android:ems="10"
         android:hint="@string/hint_number"
         android:imeOptions="flagNoFullscreen"
         android:inputType="phone"
+        android:minEms="9"
         app:layout_constraintEnd_toStartOf="@+id/img_operator"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -81,12 +80,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:entries="@array/service"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_amount" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_commision" />
 
     <Button
         android:id="@+id/btn_addoffline_payment"
@@ -95,6 +94,7 @@
         android:layout_height="wrap_content"
         android:alpha="0.5"
         android:clickable="false"
+        android:enabled="false"
         android:text="@string/pay"
         android:textColor="@color/colorPrimaryDark"
         app:layout_constraintEnd_toEndOf="parent"
@@ -132,15 +132,24 @@
         app:layout_constraintTop_toBottomOf="@+id/img_operator" />
 
     <TextView
-        style="@style/Base.TextAppearance.AppCompat.Medium"
         android:id="@+id/tv_commision"
+        style="@style/Base.TextAppearance.AppCompat.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/commision"
+        app:layout_constraintStart_toStartOf="@+id/et_amount"
+        app:layout_constraintTop_toBottomOf="@+id/et_amount" />
+
+    <Button
+        android:id="@+id/btn_calc_commission"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="@string/btn_calc"
+        android:textColor="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="@+id/et_amount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/et_amount"

@@ -174,5 +174,6 @@
     <string name="altel">Altel</string>
     <string name="tele2">Tele2</string>
     <string name="commision">Коммисия</string>
+    <string name="btn_calc">Вычислить</string>
 
 </resources>

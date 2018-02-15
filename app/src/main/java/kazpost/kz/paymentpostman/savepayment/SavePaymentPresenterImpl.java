@@ -88,7 +88,7 @@ public class SavePaymentPresenterImpl extends BasePresenter<SavePaymentView> imp
         srvInfo.setnpItemKey("47637");
         srvInfo.setoSum("500");
 
-        List<SavePaymentSrvData.MunSrv> munSrvList = new ArrayList<>();
+        ArrayList<SavePaymentSrvData.MunSrv> munSrvList = new ArrayList<>();
         SavePaymentSrvData.MunSrv munSrvCellphone = new SavePaymentSrvData.MunSrv();
         SavePaymentSrvData.MunSrv munSrvAmount = new SavePaymentSrvData.MunSrv();
         SavePaymentSrvData.MunSrv munSrvCommision = new SavePaymentSrvData.MunSrv();

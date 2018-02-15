@@ -8,6 +8,7 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Root(name = "sch:SavePaymentSrvRequest", strict = false)
@@ -148,13 +149,13 @@ public class SavePaymentSrvData {
     private SavePaymentSrvInfo asavePaymentSrvInfo;
 
     @ElementList(name = "sch:MunSrvs")
-    private List<MunSrv> bmunSrvList;
+    private ArrayList<MunSrv> bmunSrvList;
 
     public void setSavePaymentSrvInfo(SavePaymentSrvInfo savePaymentSrvInfo) {
         this.asavePaymentSrvInfo = savePaymentSrvInfo;
     }
 
-    public void setMunSrvList(List<MunSrv> munSrvList) {
+    public void setMunSrvList(ArrayList<MunSrv> munSrvList) {
         this.bmunSrvList = munSrvList;
     }
 }

@@ -12,8 +12,10 @@ import org.simpleframework.xml.strategy.Strategy;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -38,6 +40,9 @@ import kazpost.kz.paymentpostman.data.network.getpaymentstatus.GetPaymentStatusE
 import kazpost.kz.paymentpostman.data.network.getproviderbyphone.GetProviderBody;
 import kazpost.kz.paymentpostman.data.network.getproviderbyphone.GetProviderByPhoneEnvelope;
 import kazpost.kz.paymentpostman.data.network.getproviderbyphone.GetProviderData;
+import kazpost.kz.paymentpostman.data.network.savepaymentsrv.SavePaymentSrvBody;
+import kazpost.kz.paymentpostman.data.network.savepaymentsrv.SavePaymentSrvData;
+import kazpost.kz.paymentpostman.data.network.savepaymentsrv.SavePaymentSrvEnvelope;
 import kazpost.kz.paymentpostman.mvp.BaseActivity;
 import kazpost.kz.paymentpostman.mvp.BasePresenter;
 import okhttp3.Cache;
@@ -406,6 +411,104 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
 
         compositeDisposable.add(disposable);
 
+    }
+
+    public void savePaymentSrvRequest(String cellOperator, String account, String sum, String payId, String commission) {
+
+        getView().showLoading();
+
+        int cacheSize = 10 * 1024 * 1024;
+        File cacheDir = ((BaseActivity) getView()).getCacheDir();
+        Cache cache = new Cache(cacheDir, cacheSize);
+
+        Strategy strategy = new AnnotationStrategy();
+        Serializer serializer = new Persister(strategy);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(SimpleXmlConverterFactory.create(serializer))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .baseUrl(Const.BASE_URL_QIWI)
+                .client(provideOkhttpClient(cache))
+                .build();
+
+        NetworkService networkService = retrofit.create(NetworkService.class);
+
+        SavePaymentSrvEnvelope savePaymentSrvEnvelope = new SavePaymentSrvEnvelope();
+        SavePaymentSrvData data = new SavePaymentSrvData();
+        SavePaymentSrvBody body = new SavePaymentSrvBody();
+
+        SavePaymentSrvData.SavePaymentSrvInfo srvInfo = new SavePaymentSrvData.SavePaymentSrvInfo();
+        srvInfo.setaUsrCode("AST_GAUKHARO");
+        srvInfo.setbDepCode("000000");  //?
+        srvInfo.setcMunDeaCode("5249");
+        srvInfo.seteFIO("Рустембекова Мадина Сержановна");   //Откуда брать??
+        srvInfo.setfRNN("870603450675");
+        srvInfo.setgResidFl("1");  //1 - resident, 0 - nonresident
+        srvInfo.sethPeniaFl("0");
+        srvInfo.setiKNP("852"); // always?
+        srvInfo.setjAddDtl("COMFL=>0");
+        srvInfo.setkClientType("100");  //всегда 100?
+        srvInfo.setlPaymentType("1");
+        srvInfo.setnpItemKey(payId);  //payId
+        srvInfo.setoSum(sum);
+
+        ArrayList<SavePaymentSrvData.MunSrv> munSrvList = new ArrayList<>();
+        SavePaymentSrvData.MunSrv munSrvCellphone = new SavePaymentSrvData.MunSrv();
+        SavePaymentSrvData.MunSrv munSrvAmount = new SavePaymentSrvData.MunSrv();
+        SavePaymentSrvData.MunSrv munSrvCommision = new SavePaymentSrvData.MunSrv();
+
+        munSrvCellphone.setAcode("CELLPHONE");
+        munSrvCellphone.setBvalue(account); //account - phone number
+        munSrvCellphone.setCsrvId(cellOperator);       //cell operator
+
+        munSrvAmount.setAcode("AMOUNT");
+        munSrvAmount.setBvalue(sum);  //Sum
+        munSrvAmount.setCsrvId(cellOperator);
+
+        munSrvCommision.setAcode("AW_CMS");
+        munSrvCommision.setBvalue(commission);
+        munSrvCommision.setCsrvId(cellOperator);
+
+
+        munSrvList.add(munSrvCellphone);
+        munSrvList.add(munSrvAmount);
+        munSrvList.add(munSrvCommision);
+
+        data.setMunSrvList(munSrvList);
+        data.setSavePaymentSrvInfo(srvInfo);
+
+        body.setSavePaymentSrvData(data);
+
+        savePaymentSrvEnvelope.setSavePaymentSrvBody(body);
+
+
+       /* Calendar cal = Calendar.getInstance();
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+        String formatted = format1.format(cal.getTime());*/
+
+
+        networkService.savePaymentSrv(savePaymentSrvEnvelope)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(envelope1 -> {
+                    getView().hideLoading();
+                    String respCode = envelope1.getBody().getSavePaymentSrvResponse().getResponseInfo().getResponseCode();
+                    String respText = envelope1.getBody().getSavePaymentSrvResponse().getResponseInfo().getResponseText();
+
+                    if (respCode.equals("0")) {
+                        ((BaseActivity) getView()).showToast(respText);
+                    } else {
+//                        ((BaseActivity) getView()).showToast(errorMap.get(respCode));
+                        ((BaseActivity) getView()).showToast(respCode);
+                    }
+
+                }, throwable -> {
+                    getView().hideLoading();
+                    ((BaseActivity) getView()).showToast(throwable.getMessage());
+                    Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
+                });
+
+//        getView().showCheckPaymentResult();
     }
 
     private void closeCache(Cache cache) {

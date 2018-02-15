@@ -16,14 +16,11 @@ import android.widget.Toast;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
-import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import kazpost.kz.paymentpostman.R;
 import kazpost.kz.paymentpostman.mvp.BaseActivity;
 
@@ -72,24 +69,20 @@ public class CheckPaymentActivity extends BaseActivity<CheckView> implements Che
 
         sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
 
-
         initErrorMap();
         setSpinnerSelectionListener();
-
         initSumFieldForCommision();
-
         getPhone();
-
     }
 
     private void initSumFieldForCommision() {
 
-        RxTextView.textChanges(etAmount)
-                .skipInitialValue()
-                .filter(charSequence -> charSequence.length() > 1)
-                .debounce(500, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(sum -> presenter.calcPaymentCom("AST_GAUKHARO", sum.toString(), getAccountOperator(), map));
+//        RxTextView.textChanges(etAmount)
+//                .skipInitialValue()
+//                .filter(charSequence -> charSequence.length() > 1)
+//                .debounce(500, TimeUnit.MILLISECONDS)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(sum -> presenter.calcPaymentCom("AST_GAUKHARO", sum.toString(), getAccountOperator(), map));
     }
 
 
@@ -105,7 +98,8 @@ public class CheckPaymentActivity extends BaseActivity<CheckView> implements Che
                 .subscribe(charSequence -> presenter.getProviderByPhone(charSequence.toString(), map));
 
 
-        presenter.getPaymentStatus(String.valueOf(getPayAndRecId()), map);
+        //TODO move this call somewhere else
+//        presenter.getPaymentStatus(String.valueOf(getPayAndRecId()), map);
 
     }
 
@@ -216,6 +210,7 @@ public class CheckPaymentActivity extends BaseActivity<CheckView> implements Che
         if (res.equals("success")) {
             btnAddofflinePayment.setAlpha(1);
             btnAddofflinePayment.setClickable(true);
+            btnAddofflinePayment.setEnabled(true);
         }
     }
 
@@ -228,7 +223,10 @@ public class CheckPaymentActivity extends BaseActivity<CheckView> implements Che
     public void onCalcPaymentComResult(int i) {
         showToast("OnCalcPaymentResult" + i);
         tvCommision.setText(i + " тенге");
+        commision = i;
     }
+
+    int commision = 0;
 
     @Override
     public void onGetPaymentStatus(String result) {
@@ -248,14 +246,22 @@ public class CheckPaymentActivity extends BaseActivity<CheckView> implements Che
 
     @OnClick(R.id.btn_addoffline_payment)
     public void onBtnAddOfflineClicked() {
-        presenter.addOfflinePaymentRequest(getPayAndRecId(), 643,
-                etAmount.getText().toString(), serviceInt, etAccount.getText().toString(), map);
+        presenter.savePaymentSrvRequest(String.valueOf(getAccountOperator()), etAccount.getText().toString(),
+                etAmount.getText().toString(), String.valueOf(getPayAndRecId()), String.valueOf(commision));
+
+//        presenter.addOfflinePaymentRequest(getPayAndRecId(), 643,
+//                etAmount.getText().toString(), serviceInt, etAccount.getText().toString(), map);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         sharedPreferences = null;
+    }
+
+    @OnClick(R.id.btn_calc_commission)
+    public void onCalcCommissionClicked() {
+        presenter.calcPaymentCom("AST_GAUKHARO", etAmount.getText().toString(), getAccountOperator(), map);
     }
 
 
