@@ -9,6 +9,7 @@ import kazpost.kz.paymentpostman.data.network.checkpaymentmodels.Envelope;
 import kazpost.kz.paymentpostman.data.network.getpaymentstatus.GetPaymentStatusEnvelope;
 import kazpost.kz.paymentpostman.data.network.getproviderbyphone.GetProviderByPhoneEnvelope;
 import kazpost.kz.paymentpostman.data.network.savepaymentsrv.SavePaymentSrvEnvelope;
+import kazpost.kz.paymentpostman.data.network.sms.SendLatinEnvelope;
 import retrofit2.http.Body;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
@@ -50,4 +51,10 @@ public interface NetworkService {
     @Headers("Content-Type: text/xml")
     Observable<kazpost.kz.paymentpostman.data.network.getproviderbyphone.Envelope> getProviderByPhone(
             @Body GetProviderByPhoneEnvelope requestEnvelope);
+
+
+    @POST("smsgate")
+    @Headers("Content-Type: text/xml")
+    Observable<kazpost.kz.paymentpostman.data.network.sms.Envelope> sendLatinSms(
+            @Body SendLatinEnvelope requestEnvelope);
 }

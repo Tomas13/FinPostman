@@ -8,6 +8,6 @@ import kazpost.kz.paymentpostman.mvp.MvpPresenter;
 
 public interface SavePaymentPresenter<V extends SavePaymentView> extends MvpPresenter{
 
-    void savePaymentSrvRequest();
+//    void savePaymentSrvRequest();
 
 }

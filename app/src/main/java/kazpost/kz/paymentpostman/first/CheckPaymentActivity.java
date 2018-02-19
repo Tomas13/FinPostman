@@ -39,6 +39,8 @@ public class CheckPaymentActivity extends BaseActivity<CheckView> implements Che
     TextView tvCommision;
     @BindView(R.id.tv_result_sum)
     TextView tvResultSum;
+    @BindView(R.id.btn_calc_commission)
+    Button btnCalcCommission;
 
     private CheckPaymentPresenter presenter;
     @BindView(R.id.et_amount)
@@ -79,6 +81,18 @@ public class CheckPaymentActivity extends BaseActivity<CheckView> implements Che
 //                .debounce(500, TimeUnit.MILLISECONDS)
 //                .observeOn(AndroidSchedulers.mainThread())
 //                .subscribe(sum -> presenter.calcPaymentCom("AST_GAUKHARO", sum.toString(), getAccountOperator(), map));
+
+        RxTextView.textChanges(etAmount)
+                .skipInitialValue()
+                .subscribe(charSequence -> {
+                    if (charSequence.length() > 0) {
+                        btnCalcCommission.setAlpha(1);
+                        btnCalcCommission.setEnabled(true);
+                    } else {
+                        btnCalcCommission.setAlpha(0.5F);
+                        btnCalcCommission.setEnabled(false);
+                    }
+                });
     }
 
 
@@ -163,7 +177,7 @@ public class CheckPaymentActivity extends BaseActivity<CheckView> implements Che
     }
 
     @Override
-    public void onSavePaymentSrvResult(){
+    public void onSavePaymentSrvResult() {
 
         presenter.addOfflinePaymentRequest(getPayAndRecId(), 643,
                 etAmount.getText().toString(), getAccountOperator(), etAccount.getText().toString(), map);
@@ -238,6 +252,8 @@ public class CheckPaymentActivity extends BaseActivity<CheckView> implements Che
 
     @OnClick(R.id.btn_send_check)
     public void onViewClicked() {
+        presenter.sendLatinSms("test111", "test111", "87072226642", "Hello man");
+
     }
 
     //    @Override

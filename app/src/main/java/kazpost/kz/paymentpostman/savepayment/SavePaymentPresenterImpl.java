@@ -10,17 +10,29 @@ import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.strategy.Strategy;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import kazpost.kz.paymentpostman.Const;
 import kazpost.kz.paymentpostman.data.network.NetworkService;
+import kazpost.kz.paymentpostman.data.network.calcpaymentcommissionr.CalcPaymentComBody;
+import kazpost.kz.paymentpostman.data.network.calcpaymentcommissionr.CalcPaymentComData;
+import kazpost.kz.paymentpostman.data.network.calcpaymentcommissionr.CalcPaymentComEnvelope;
+import kazpost.kz.paymentpostman.data.network.getproviderbyphone.GetProviderBody;
+import kazpost.kz.paymentpostman.data.network.getproviderbyphone.GetProviderByPhoneEnvelope;
+import kazpost.kz.paymentpostman.data.network.getproviderbyphone.GetProviderData;
 import kazpost.kz.paymentpostman.data.network.savepaymentsrv.SavePaymentSrvBody;
 import kazpost.kz.paymentpostman.data.network.savepaymentsrv.SavePaymentSrvData;
 import kazpost.kz.paymentpostman.data.network.savepaymentsrv.SavePaymentSrvEnvelope;
+import kazpost.kz.paymentpostman.data.network.sms.SendLatinBody;
+import kazpost.kz.paymentpostman.data.network.sms.SendLatinEnvelope;
 import kazpost.kz.paymentpostman.mvp.BaseActivity;
 import kazpost.kz.paymentpostman.mvp.BasePresenter;
 import okhttp3.Cache;
@@ -35,6 +47,7 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 
 public class SavePaymentPresenterImpl extends BasePresenter<SavePaymentView> implements SavePaymentPresenter {
 
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     private static final String TAG = "Presn";
 
@@ -49,9 +62,9 @@ public class SavePaymentPresenterImpl extends BasePresenter<SavePaymentView> imp
     }
 
 
-    @Override
-    //    Запрос на проверку возможности оплаты (check) запрос
-    public void savePaymentSrvRequest() {
+
+
+    public void getProviderByPhone(String account, LinkedHashMap<String, String> errorMap) {
 
         getView().showLoading();
 
@@ -71,85 +84,59 @@ public class SavePaymentPresenterImpl extends BasePresenter<SavePaymentView> imp
 
         NetworkService networkService = retrofit.create(NetworkService.class);
 
-        SavePaymentSrvEnvelope savePaymentSrvEnvelope = new SavePaymentSrvEnvelope();
-        SavePaymentSrvData data = new SavePaymentSrvData();
-        SavePaymentSrvBody body = new SavePaymentSrvBody();
+        GetProviderByPhoneEnvelope getProviderByPhoneEnvelope = new GetProviderByPhoneEnvelope();
+        GetProviderBody body = new GetProviderBody();
+        GetProviderData data = new GetProviderData();
+        data.setPhone(account);
+        body.setGetProviderData(data);
+        getProviderByPhoneEnvelope.setGetProviderBody(body);
 
-        SavePaymentSrvData.SavePaymentSrvInfo srvInfo = new SavePaymentSrvData.SavePaymentSrvInfo();
-        srvInfo.setaUsrCode("ASTLUSH");
-        srvInfo.setbDepCode("000000");
-        srvInfo.setcMunDeaCode("5006");
-        srvInfo.seteFIO("Abay");
-        srvInfo.setgResidFl("1");  //1 - resident, 0 - nonresident
-        srvInfo.sethPeniaFl("0");
-        srvInfo.setiKNP("852");
-        srvInfo.setkClientType("100");
-        srvInfo.setlPaymentType("1");
-        srvInfo.setnpItemKey("47637");
-        srvInfo.setoSum("500");
-
-        ArrayList<SavePaymentSrvData.MunSrv> munSrvList = new ArrayList<>();
-        SavePaymentSrvData.MunSrv munSrvCellphone = new SavePaymentSrvData.MunSrv();
-        SavePaymentSrvData.MunSrv munSrvAmount = new SavePaymentSrvData.MunSrv();
-        SavePaymentSrvData.MunSrv munSrvCommision = new SavePaymentSrvData.MunSrv();
-
-        munSrvCellphone.setAcode("CELLPHONE");
-        munSrvCellphone.setBvalue("+77072226642");
-        munSrvCellphone.setCsrvId("503");
-
-        munSrvAmount.setAcode("AMOUNT");
-        munSrvAmount.setBvalue("500");
-        munSrvAmount.setCsrvId("503");
-
-        munSrvCommision.setAcode("AW_CMS");
-        munSrvCommision.setBvalue("50");
-        munSrvCommision.setCsrvId("503");
-
-
-        munSrvList.add(munSrvCellphone);
-        munSrvList.add(munSrvAmount);
-        munSrvList.add(munSrvCommision);
-
-        data.setMunSrvList(munSrvList);
-        data.setSavePaymentSrvInfo(srvInfo);
-
-        body.setSavePaymentSrvData(data);
-
-        savePaymentSrvEnvelope.setSavePaymentSrvBody(body);
-
-
-       /* Calendar cal = Calendar.getInstance();
-        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
-        String formatted = format1.format(cal.getTime());*/
-
-
-        networkService.savePaymentSrv(savePaymentSrvEnvelope)
+        Disposable disposable = networkService.getProviderByPhone(getProviderByPhoneEnvelope)
                 .subscribeOn(Schedulers.io())
+                .cache()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(envelope1 -> {
+                .subscribe(envelope -> {
+
                     getView().hideLoading();
-                    String respCode = envelope1.getBody().getSavePaymentSrvResponse().getResponseInfo().getResponseCode();
-                    String respText = envelope1.getBody().getSavePaymentSrvResponse().getResponseInfo().getResponseText();
+
+                    String respCode = envelope.getBody().getProviderResponse().getResponseInfo().getResponseCode();
+                    String respText = envelope.getBody().getProviderResponse().getResponseInfo().getResponseText();
 
                     if (respCode.equals("0")) {
-                        ((BaseActivity) getView()).showToast(respText);
+                        getView().onCalcPaymentComResult(Integer.valueOf(envelope.getBody().getProviderResponse().getProviderId()));
                     } else {
-//                        ((BaseActivity) getView()).showToast(errorMap.get(respCode));
-                        ((BaseActivity) getView()).showToast(respCode);
+                        ((BaseActivity) getView()).showToast(errorMap.get(respCode));
+                        getView().onCalcPaymentComResult(-1);
                     }
+
+                    closeCache(cache);
 
                 }, throwable -> {
                     getView().hideLoading();
+
                     ((BaseActivity) getView()).showToast(throwable.getMessage());
                     Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
+
+                    closeCache(cache);
                 });
 
-//        getView().showCheckPaymentResult();
+        compositeDisposable.add(disposable);
+    }
+
+
+    private void closeCache(Cache cache) {
+        if (cache != null) {
+            try {
+                cache.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
     public void destroy() {
-
+        compositeDisposable.clear();
     }
 
 

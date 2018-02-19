@@ -11,6 +11,8 @@ public interface SavePaymentView extends MvpPresenter{
 
     void savePaymentSrv();
 
+    void onCalcPaymentComResult(int value);
+
     void showLoading();
 
     void hideLoading();

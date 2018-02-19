@@ -12,4 +12,5 @@ public class Const {
     public static final String PREF_OPERATOR_CODE = "operator_code";
 
     public static final String BASE_URL_QIWI = "http://172.30.73.19:8088/";
+    public static final String BASE_URL_SMS = "http://89.218.48.181:8080/";
 }

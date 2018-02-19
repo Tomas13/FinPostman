@@ -42,6 +42,8 @@ import kazpost.kz.paymentpostman.data.network.getproviderbyphone.GetProviderData
 import kazpost.kz.paymentpostman.data.network.savepaymentsrv.SavePaymentSrvBody;
 import kazpost.kz.paymentpostman.data.network.savepaymentsrv.SavePaymentSrvData;
 import kazpost.kz.paymentpostman.data.network.savepaymentsrv.SavePaymentSrvEnvelope;
+import kazpost.kz.paymentpostman.data.network.sms.SendLatinBody;
+import kazpost.kz.paymentpostman.data.network.sms.SendLatinEnvelope;
 import kazpost.kz.paymentpostman.mvp.BaseActivity;
 import kazpost.kz.paymentpostman.mvp.BasePresenter;
 import okhttp3.Cache;
@@ -517,6 +519,80 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
 
         compositeDisposable.add(disposable);
 //        getView().showCheckPaymentResult();
+    }
+
+
+    public void sendLatinSms(String username, String password, String phone, String message) {
+
+        getView().showLoading();
+
+        int cacheSize = 10 * 1024 * 1024;
+        File cacheDir = ((BaseActivity) getView()).getCacheDir();
+        Cache cache = new Cache(cacheDir, cacheSize);
+
+        Strategy strategy = new AnnotationStrategy();
+        Serializer serializer = new Persister(strategy);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(SimpleXmlConverterFactory.create(serializer))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .baseUrl(Const.BASE_URL_SMS)
+                .client(provideOkhttpClient(cache))
+                .build();
+
+        NetworkService networkService = retrofit.create(NetworkService.class);
+
+        SendLatinEnvelope sendLatinEnvelope = new SendLatinEnvelope();
+        SendLatinBody body = new SendLatinBody();
+
+        SendLatinBody.Element2 element2 = new SendLatinBody.Element2();
+        SendLatinBody.InnerElement innerElement = new SendLatinBody.InnerElement();
+
+        innerElement.setaPhoneNumber(phone);
+        innerElement.setbMessage(message);
+        element2.setInnerElement(innerElement);
+
+        body.setLatinData(element2);
+
+
+        SendLatinEnvelope.Header  header = new SendLatinEnvelope.Header();
+        header.setAusername(username);
+        header.setBpassword(password);
+
+        sendLatinEnvelope.setAheader(header);
+        sendLatinEnvelope.setLatinBody(body);
+
+
+        Disposable disposable = networkService.sendLatinSms(sendLatinEnvelope)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(envelope -> {
+
+                    getView().hideLoading();
+
+                    String respCode = envelope.getBody().getProviderResponse().getElement1().getaSmsId();
+                    String respText = envelope.getBody().getProviderResponse().getElement1().getbStatus();
+
+                    ((BaseActivity) getView()).showToast(respCode + " " + respText);
+//                    if (respCode.equals("0")) {
+//                        getView().onGetProviderByPhoneResult(Integer.valueOf(envelope.getBody().getProviderResponse().getProviderId()));
+//                    } else {
+//                        ((BaseActivity) getView()).showToast(errorMap.get(respCode));
+//                        getView().onGetProviderByPhoneResult(-1);
+//                    }
+
+                    closeCache(cache);
+
+                }, throwable -> {
+                    getView().hideLoading();
+
+                    ((BaseActivity) getView()).showToast(throwable.getMessage());
+                    Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
+
+                    closeCache(cache);
+                });
+
+        compositeDisposable.add(disposable);
     }
 
     private void closeCache(Cache cache) {
