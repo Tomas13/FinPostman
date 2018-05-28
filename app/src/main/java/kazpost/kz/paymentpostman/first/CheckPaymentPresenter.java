@@ -130,15 +130,19 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
                     if (respCode.equals("0")) {
                         getView().onCheckPaymentResult(respText);
                     } else {
-                        getView().onCheckPaymentResult(errorMap.get(respCode));
+                        getView().showErrorDialog(errorMap.get(respCode));
+
+//                        getView().onCheckPaymentResult(errorMap.get(respCode));
                     }
                     closeCache(cache);
 
 
                 }, throwable -> {
                     getView().hideLoading();
-                    getView().onCheckPaymentResult(throwable.getMessage());
-                    Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
+                    getView().showErrorDialog(throwable.getMessage());
+
+//                    getView().onCheckPaymentResult(throwable.getMessage());
+//                    Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
                     closeCache(cache);
 
                 });
@@ -205,19 +209,21 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
                     if (respCode.equals("0")) {
                         getView().onAddOfflinePaymentResult(respText);
                     } else {
-                        getView().onAddOfflinePaymentResult(errorMap.get(respCode));
+                        getView().showErrorDialog(errorMap.get(respCode));
+//                        getView().onAddOfflinePaymentResult(errorMap.get(respCode));
                     }
 
 
-                    ((BaseActivity) getView()).showToast(envelope.getBody().getAddOfflinePaymentResponse().getPaymentResult() + "");
+//                    ((BaseActivity) getView()).showToast(envelope.getBody().getAddOfflinePaymentResponse().getPaymentResult() + "");
                     closeCache(cache);
 
                 }, throwable -> {
 
                     getView().hideLoading();
+                    getView().showErrorDialog(throwable.getMessage());
 
-                    ((BaseActivity) getView()).showToast(throwable.getMessage());
-                    Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
+//                    ((BaseActivity) getView()).showToast(throwable.getMessage());
+//                    Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
                     closeCache(cache);
 
                 });
@@ -265,7 +271,9 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
                     if (respCode.equals("0")) {
                         getView().onGetProviderByPhoneResult(Integer.valueOf(envelope.getBody().getProviderResponse().getProviderId()));
                     } else {
-                        ((BaseActivity) getView()).showToast(errorMap.get(respCode));
+
+                        getView().showErrorDialog(errorMap.get(respCode));
+//                        ((BaseActivity) getView()).showToast(errorMap.get(respCode));
                         getView().onGetProviderByPhoneResult(-1);
                     }
 
@@ -273,9 +281,10 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
 
                 }, throwable -> {
                     getView().hideLoading();
+                    getView().showErrorDialog(throwable.getMessage());
 
-                    ((BaseActivity) getView()).showToast(throwable.getMessage());
-                    Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
+//                    ((BaseActivity) getView()).showToast(throwable.getMessage());
+//                    Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
 
                     closeCache(cache);
                 });
@@ -330,13 +339,9 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
                     String respCode = envelope.getBody().getCalcPaymentResponse().getResponseInfo().getResponseCode();
                     String respText = envelope.getBody().getCalcPaymentResponse().getResponseInfo().getResponseText();
 
-                    if (envelope.getBody().getCalcPaymentResponse().getCmsAmount() == null) {
-                        getView().onCalcPaymentComResult(0);
-                    }
-
-                    if (respText.equals("")) {
-                        ((BaseActivity) getView()).showToast("Нет комисии");
-                    }
+//                    if (envelope.getBody().getCalcPaymentResponse().getCmsAmount() == null) {
+//                        getView().onCalcPaymentComResult(0);
+//                    }
 
                     if (respCode.equals("0")) {
                         getView().onCalcPaymentComResult(Integer.valueOf(envelope.getBody().getCalcPaymentResponse().getCmsAmount()));
@@ -397,11 +402,12 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
                     if (respCode.equals("0")) {
                         getView().onGetPaymentStatus(respText);
                     } else {
-                        getView().onCheckPaymentResult(errorMap.get(respCode));
+//                        getView().onCheckPaymentResult(errorMap.get(respCode));
+                        getView().showErrorDialog(errorMap.get(respCode));
 
                     }
 
-                    ((BaseActivity) getView()).showToast(respCode);
+//                    ((BaseActivity) getView()).showToast(respCode);
 
                     closeCache(cache);
 
@@ -464,7 +470,7 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
         SavePaymentSrvData.MunSrv munSrvCommision = new SavePaymentSrvData.MunSrv();
 
         munSrvCellphone.setAcode("CELLPHONE");
-        munSrvCellphone.setBvalue(account); //account - phone number
+        munSrvCellphone.setBvalue("+7" + account); //account - phone number
         munSrvCellphone.setCsrvId(cellOperator);       //cell operator
 
         munSrvAmount.setAcode("AMOUNT");
@@ -504,14 +510,16 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
                     if (respCode.equals("0")) {
                         getView().onSavePaymentSrvResult();
                     } else {
-                        ((BaseActivity) getView()).showToast(errorMap.get(respCode));
+                        getView().showErrorDialog(errorMap.get(respCode));
                     }
                     closeCache(cache);
 
                 }, throwable -> {
                     getView().hideLoading();
-                    ((BaseActivity) getView()).showToast(throwable.getMessage());
-                    Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
+                    getView().showErrorDialog(throwable.getMessage());
+
+//                    ((BaseActivity) getView()).showToast();
+//                    Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
 
                     closeCache(cache);
 
@@ -555,7 +563,7 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
         body.setLatinData(element2);
 
 
-        SendLatinEnvelope.Header  header = new SendLatinEnvelope.Header();
+        SendLatinEnvelope.Header header = new SendLatinEnvelope.Header();
         header.setAusername(username);
         header.setBpassword(password);
 
@@ -585,9 +593,9 @@ public class CheckPaymentPresenter extends BasePresenter<CheckView> implements C
 
                 }, throwable -> {
                     getView().hideLoading();
-
-                    ((BaseActivity) getView()).showToast(throwable.getMessage());
-                    Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
+                    getView().showErrorDialog(throwable.getMessage());
+//                    ((BaseActivity) getView()).showToast(throwable.getMessage());
+//                    Log.d(TAG, "checkPaymentRequest: " + throwable.getMessage());
 
                     closeCache(cache);
                 });

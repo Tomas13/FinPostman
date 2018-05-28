@@ -3,6 +3,7 @@ package kazpost.kz.paymentpostman.first;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
 import android.widget.Button;
@@ -155,7 +156,7 @@ public class CheckPaymentActivity extends BaseActivity<CheckView> implements Che
 
     @Override
     public void onCheckPaymentResult(String res) {
-        showToast(res);
+//        showToast(res);
 
         if (res.equals("success")) {
             btnAddofflinePayment.setAlpha(1);
@@ -186,7 +187,7 @@ public class CheckPaymentActivity extends BaseActivity<CheckView> implements Che
 
     @Override
     public void onAddOfflinePaymentResult(String res) {
-        showToast(res);
+//        showToast(res);
 
         presenter.getPaymentStatus(String.valueOf(getPayAndRecId()), map);
     }
@@ -241,6 +242,23 @@ public class CheckPaymentActivity extends BaseActivity<CheckView> implements Che
 
     private int getAccountOperator() {
         return sharedPreferences.getInt(PREF_OPERATOR_CODE, 0);
+    }
+
+
+    public void showErrorDialog(String message) {
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // 2. Chain together various setter methods to set the dialog characteristics
+        builder.setMessage(message);
+
+        builder.setCancelable(false);
+//        builder.setPositiveButton("Да", (dialog, which) -> super.onBackPressed());
+        builder.setNegativeButton("OK", ((dialog, which) -> dialog.dismiss()));
+
+        // 3. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 

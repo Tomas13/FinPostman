@@ -20,4 +20,6 @@ public interface CheckView extends MvpPresenter {
     void onCalcPaymentComResult(int i);
 
     void onGetPaymentStatus(String res);
+
+    void showErrorDialog(String msg);
 }
